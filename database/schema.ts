@@ -44,12 +44,16 @@ export const insertVehicleSchema = createInsertSchema(vehicles);
 
 export const subscriptions = pgTable('subscriptions', {
 	id: serial('id').primaryKey(),
-	type: text('type', {enum: ['basic', 'premium']}),
+	type: text('type', {enum: ['basic', 'premium']})
+		.notNull()
+		.default('basic'),
 	interval: text('interval', {enum: ['monthly', 'annual']}).default('monthly'),
 	status: text('status', {
 		enum: ['active', 'cancelled', 'overdue'],
-	}),
-	startDate: timestamp('start_date').notNull(),
+	})
+		.notNull()
+		.default('active'),
+	startDate: timestamp('start_date').notNull().defaultNow(),
 	endDate: timestamp('end_date'),
 	totalWashes: integer('total_washes').notNull().default(4),
 	remainingWashing: integer('remaining_washes').notNull().default(4),
