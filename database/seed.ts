@@ -1,26 +1,14 @@
 import {db} from '.';
-import {
-	users,
-	vehicles,
-	subscriptions,
-	selectUserSchema,
-	selectVehicleSchema,
-	selectSubscriptionSchema,
-	insertUserSchema,
-	insertVehicleSchema,
-	insertSubscriptionSchema,
-} from './schema';
+import {users, vehicles, subscriptions} from './schema';
 import {faker} from '@faker-js/faker';
-import {z} from 'zod';
-
-type User = z.infer<typeof selectUserSchema>;
-type NewUser = z.infer<typeof insertUserSchema>;
-
-type Vehicle = z.infer<typeof selectVehicleSchema>;
-type NewVehicle = z.infer<typeof insertVehicleSchema>;
-
-type NewSubscription = z.infer<typeof insertSubscriptionSchema>;
-type Subscription = z.infer<typeof selectSubscriptionSchema>;
+import {
+	User,
+	NewUser,
+	Vehicle,
+	NewVehicle,
+	Subscription,
+	NewSubscription,
+} from '../types/types';
 
 const generateUsers = (count: number): NewUser[] => {
 	return Array.from({length: count}, () => ({
