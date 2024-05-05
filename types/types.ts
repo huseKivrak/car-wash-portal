@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 import {
 	selectUserSchema,
 	insertUserSchema,
@@ -21,3 +21,8 @@ export interface DetailedUser extends User {
 	vehicles: Vehicle[];
 	subscriptions: Subscription[];
 }
+
+export type NavLink = {
+	label: string;
+	href: string;
+};
