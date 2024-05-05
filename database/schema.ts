@@ -6,14 +6,16 @@ import {
 	integer,
 	boolean,
 } from 'drizzle-orm/pg-core';
-import {createSelectSchema, createInsertSchema} from 'drizzle-zod';
+import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
+
+//todo: fix enum (zod can't infer)
 
 export const users = pgTable('users', {
 	id: serial('id').primaryKey(),
 	fullName: text('full_name'),
 	phone: text('phone'),
 	email: text('email').notNull().unique(),
-	role: text('role', {enum: ['admin', 'csr', 'dev', 'user']})
+	role: text('role', { enum: ['admin', 'csr', 'dev', 'user'] })
 		.notNull()
 		.default('user'),
 	isStaff: boolean('is_staff').default(false),
@@ -44,10 +46,12 @@ export const insertVehicleSchema = createInsertSchema(vehicles);
 
 export const subscriptions = pgTable('subscriptions', {
 	id: serial('id').primaryKey(),
-	type: text('type', {enum: ['basic', 'premium']})
+	type: text('type', { enum: ['basic', 'premium'] })
 		.notNull()
 		.default('basic'),
-	interval: text('interval', {enum: ['monthly', 'annual']}).default('monthly'),
+	interval: text('interval', { enum: ['monthly', 'annual'] }).default(
+		'monthly'
+	),
 	status: text('status', {
 		enum: ['active', 'cancelled', 'overdue'],
 	})
@@ -56,7 +60,7 @@ export const subscriptions = pgTable('subscriptions', {
 	startDate: timestamp('start_date').notNull().defaultNow(),
 	endDate: timestamp('end_date'),
 	totalWashes: integer('total_washes').notNull().default(4),
-	remainingWashing: integer('remaining_washes').notNull().default(4),
+	remainingWashes: integer('remaining_washes').notNull().default(4),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at'),
 	cancelledAt: timestamp('cancelled_at'),
@@ -95,7 +99,7 @@ export const purchases = pgTable('purchases', {
 	discount: integer('discount'),
 	finalPrice: integer('final_price').notNull(),
 	itemId: integer('item_id').notNull(),
-	itemType: text('item_type', {enum: ['subscription', 'wash']}).notNull(),
+	itemType: text('item_type', { enum: ['subscription', 'wash'] }).notNull(),
 	paidOn: timestamp('paid_on'),
 	createdAt: timestamp('created_on').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at').notNull(),
