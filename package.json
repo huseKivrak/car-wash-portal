@@ -11,18 +11,24 @@
 		"seed": "tsx ./database/seed.ts"
 	},
 	"dependencies": {
+		"@radix-ui/react-select": "^2.0.0",
+		"@radix-ui/react-slot": "^1.0.2",
+		"@tanstack/react-table": "^8.16.0",
 		"@typescript-eslint/eslint-plugin": "^7.8.0",
 		"@typescript-eslint/parser": "^7.8.0",
+		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"drizzle-orm": "^0.30.10",
 		"drizzle-zod": "^0.5.1",
 		"eslint-plugin-drizzle": "^0.2.3",
 		"framer-motion": "^11.1.7",
+		"lucide-react": "^0.378.0",
 		"next": "14.2.3",
 		"postgres": "^3.4.4",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"tailwind-merge": "^2.3.0",
+		"tailwindcss-animate": "^1.0.7",
 		"zod": "^3.23.6"
 	},
 	"devDependencies": {
