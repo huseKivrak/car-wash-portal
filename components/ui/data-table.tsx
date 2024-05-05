@@ -1,5 +1,5 @@
 'use client';
-import {useState} from 'react';
+import { useState } from 'react';
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -19,8 +19,8 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import {Input} from './input';
-import {Pagination} from './pagination';
+import { Input } from './input';
+import { Pagination } from './pagination';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
