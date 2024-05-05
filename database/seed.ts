@@ -1,6 +1,6 @@
-import {db} from '.';
-import {users, vehicles, subscriptions} from './schema';
-import {faker} from '@faker-js/faker';
+import { db } from '.';
+import { users, vehicles, subscriptions } from './schema';
+import { faker } from '@faker-js/faker';
 import {
 	User,
 	NewUser,
@@ -8,10 +8,10 @@ import {
 	NewVehicle,
 	Subscription,
 	NewSubscription,
-} from '../types/types';
+} from '@/types/types';
 
 const generateUsers = (count: number): NewUser[] => {
-	return Array.from({length: count}, () => ({
+	return Array.from({ length: count }, () => ({
 		fullName: faker.person.fullName(),
 		phone: faker.phone.number(),
 		role: 'user',
