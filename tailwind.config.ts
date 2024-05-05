@@ -1,5 +1,5 @@
 import type {Config} from 'tailwindcss';
-const {nextui} = require('@nextui-org/react');
+
 const config: Config = {
 	content: [
 		'./pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -9,6 +9,6 @@ const config: Config = {
 	theme: {
 		extend: {},
 	},
-	plugins: [nextui()],
+	plugins: [require('@tailwindcss/typography')],
 };
 export default config;
