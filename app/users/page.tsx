@@ -1,6 +1,6 @@
-import {userColumns} from '@/components/ui/userColumns';
-import {DataTable} from '@/components/ui/data-table';
-import {getAllDetailedUsers} from '@/database/queries';
+import { userColumns } from '@/app/users/userColumns';
+import { DataTable } from '@/components/ui/data-table';
+import { getAllDetailedUsers } from '@/database/queries';
 
 export default async function UsersListPage() {
 	const users = await getAllDetailedUsers();
