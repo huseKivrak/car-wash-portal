@@ -24,10 +24,17 @@ import {
 	DropdownMenuPortal,
 } from '@/components/ui/dropdown-menu';
 
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from '@/components/ui/hover-card';
+
 import Link from 'next/link';
 import { DropdownMenuGroup } from '@radix-ui/react-dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { toast } from '@/components/ui/use-toast';
 
 export const userColumns: ColumnDef<DetailedUser>[] = [
 	{
@@ -57,58 +64,85 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 	},
 	{
 		accessorKey: 'subscriptions',
-		header: 'SUBSCRIPTION',
+		header: () => <div>SUBSCRIPTION STATUS</div>,
 		cell: ({ row }) => {
 			const subscriptions = row.getValue('subscriptions') as Subscription[];
 			const subscription = subscriptions[0];
 			const vehicle = row.original.vehicles[0];
 			const { licensePlate, make, model, year, color } = vehicle;
-			const subType = subscription.type;
+			const { status, type, startDate, endDate } = subscription;
 			return (
-				<div className='flex justify-center space-x-2 max-w-sm'>
-					<p className='tracking-tighter text-sm '>
-						{`${year} ${make} ${model}`}
-					</p>
-					<Badge
-						variant='outline'
-						className={cn(
-							'p-2 text-white ',
-							subscription.status === 'active'
-								? 'bg-green-600'
-								: subscription.status === 'overdue'
-								? 'bg-orange-600'
-								: ''
-						)}
-					>
-						{subType.toUpperCase()}
-					</Badge>
+				<div className='flex justify-center space-x-2'>
+					<HoverCard>
+						<HoverCardTrigger>
+							<Badge
+								variant='outline'
+								className={`w-1 h-1 p-2' ${
+									status === 'active'
+										? 'bg-green-600'
+										: status === 'overdue'
+										? 'bg-orange-600'
+										: ''
+								}`}
+							/>
+							<HoverCardContent className='flex justify-between space-x-2'>
+								<div className='space-y-1'>
+									<h4
+										className={`w-1 h-1 p-2' ${
+											status === 'active'
+												? 'bg-green-600'
+												: status === 'overdue'
+												? 'bg-orange-600'
+												: ''
+										}`}
+									>
+										{status.toUpperCase()}
+									</h4>
+									<div className='flex flex-col'>
+										<span className='text-sm '>{`${year} ${make} ${model}`}</span>
+										<span></span>
+										<span className='text-xs'>Plate: {licensePlate}</span>
+									</div>
+
+									<div className='flex flex-col text-xs items-start pt-2'>
+										<span className='text-muted-foreground'>
+											Started: {startDate.toLocaleDateString()}
+										</span>
+										<span className='font-semibold'>
+											Expires: {endDate?.toLocaleDateString()}
+										</span>
+									</div>
+								</div>
+							</HoverCardContent>
+						</HoverCardTrigger>
+					</HoverCard>
 				</div>
 			);
 		},
 	},
-	{
-		id: 'washes',
-		header: 'WASHES LEFT (TOTAL)',
-		cell: ({ row }) => {
-			const subscriptions = row.getValue('subscriptions') as Subscription[];
-			const { remainingWashes, totalWashes } = subscriptions[0];
-			return <div>{`${remainingWashes} ( ${totalWashes} )`}</div>;
-		},
-	},
-	{
-		id: 'subscriptionEndDate',
-		header: 'EXPIRES',
-		cell: ({ row }) => {
-			const subscriptions = row.getValue('subscriptions') as Subscription[];
-			const endDate = subscriptions[0].endDate;
-			const formatted = endDate?.toLocaleDateString('en-us', {
-				year: '2-digit',
-				month: '2-digit',
-				day: '2-digit',
-			});
-			return <div>{formatted}</div>;
-		},
-	},
+	// {
+	// 	id: 'washes',
+	// 	header: 'WASHES LEFT (TOTAL)',
+	// 	cell: ({ row }) => {
+	// 		const subscriptions = row.getValue('subscriptions') as Subscription[];
+	// 		const { remainingWashes, totalWashes } = subscriptions[0];
+	// 		return <div>{`${remainingWashes} ( ${totalWashes} )`}</div>;
+	// 	},
+	// },
+	// {
+	// 	id: 'subscriptionEndDate',
+	// 	header: 'EXPIRES',
+	// 	cell: ({ row }) => {
+	// 		const subscriptions = row.getValue('subscriptions') as Subscription[];
+	// 		const endDate = subscriptions[0].endDate;
+	// 		const formatted = endDate?.toLocaleDateString('en-us', {
+	// 			year: '2-digit',
+	// 			month: '2-digit',
+	// 			day: '2-digit',
+	// 		});
+	// 		return <div>{formatted}</div>;
+	// 	},
+	// },
 	{
 		id: 'actions',
 		cell: ({ row }) => {
@@ -149,7 +183,13 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 											<span>Edit</span>
 										</DropdownMenuItem>
 
-										<DropdownMenuItem className='text-red-700'>
+										<DropdownMenuItem
+											onClick={() =>
+												toast({
+													title: 'Are you sure you want to delete this user?!',
+												})
+											}
+										>
 											<UserX className='mr-1 h-4 w-4 ' />
 											<span>Delete</span>
 										</DropdownMenuItem>
