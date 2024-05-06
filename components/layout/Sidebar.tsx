@@ -19,6 +19,7 @@ export function Sidebar() {
 						<Link
 							href={link.href}
 							className='text-muted-foreground hover:text-foreground'
+							key={link.href}
 						>
 							{link.label}
 						</Link>

@@ -23,9 +23,9 @@ export function Navbar() {
 						</NavigationMenuLink>
 					</Link>
 				</NavigationMenuItem>
-				{navLinks.map((link) => {
+				{navLinks.map((link, index) => {
 					return (
-						<NavigationMenuItem>
+						<NavigationMenuItem key={index}>
 							<Link href={link.href} legacyBehavior passHref>
 								<NavigationMenuLink className={navigationMenuTriggerStyle()}>
 									{link.label}
