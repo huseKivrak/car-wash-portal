@@ -14,7 +14,6 @@ const generateUsers = (count: number): NewUser[] => {
 	return Array.from({ length: count }, () => ({
 		fullName: faker.person.fullName(),
 		phone: faker.phone.number(),
-		role: 'user',
 		email: faker.internet.email(),
 		createdAt: faker.date.past(),
 	}));
@@ -34,11 +33,12 @@ const generateVehicles = (users: User[]): NewVehicle[] => {
 const generateSubscriptions = (vehicles: Vehicle[]): NewSubscription[] => {
 	return vehicles.map((vehicle) => ({
 		vehicleId: vehicle.id,
-		type: 'basic',
+		subscriptionType: 'basic',
 		status: 'active',
 		interval: 'monthly',
 		startDate: faker.date.past(),
 		endDate: faker.date.future(),
+		remainingWashes: faker.number.int({ min: 0, max: 10 }),
 	}));
 };
 
@@ -61,10 +61,12 @@ const seedDatabase = async (seedUsers: NewUser[]) => {
 			.values(generateSubscriptions(insertedVehicles))
 			.returning();
 		console.log('Subscriptions inserted:', insertedSubscriptions);
+
+		console.log('~~~Seeded database successfully~~~');
 	} catch (error) {
 		console.error(error);
 	}
 };
 
-const seedUsers = generateUsers(100);
+const seedUsers = generateUsers(50);
 seedDatabase(seedUsers);
