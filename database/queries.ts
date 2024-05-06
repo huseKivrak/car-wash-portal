@@ -1,7 +1,7 @@
-import {DetailedUser, Vehicle, Subscription} from '@/types/types';
-import {db} from '.';
-import {vehicles, subscriptions, users} from './schema';
-import {eq} from 'drizzle-orm';
+import { DetailedUser, Vehicle, Subscription, DetailedSubscription } from '@/types/types';
+import { db } from '.';
+import { vehicles, subscriptions, users } from './schema';
+import { eq } from 'drizzle-orm';
 
 /**
  * Fetches all vehicles for a given user id.
@@ -23,18 +23,28 @@ export const getUserVehicles = async (userId: number): Promise<Vehicle[]> => {
  * @param userId The ID of the user.
  * @returns An array of all {@link Subscription} objects for the user.
  */
-export const getUserSubscriptions = async (
+export const getUserSubscriptionsWithVehicles = async (
 	userId: number
-): Promise<Subscription[]> => {
+):Promise<DetailedSubscription[]> => {
 	const rows = await db
 		.select({
-			subscriptions,
+subscriptions,
+vehicle:vehicles
 		})
 		.from(subscriptions)
 		.leftJoin(vehicles, eq(subscriptions.vehicleId, vehicles.id))
 		.leftJoin(users, eq(vehicles.userId, users.id))
 		.where(eq(users.id, userId));
-	return rows.map((row) => row.subscriptions);
+
+		//@ts-ignore
+	return rows.map((row) => {
+		return {
+			...row.subscriptions,
+			vehicle:row.vehicle
+		}
+	})
+
+
 };
 
 /**
@@ -52,12 +62,11 @@ export const getDetailedUser = async (
 	}
 
 	const user = rows[0];
-	const userSubscriptions = await getUserSubscriptions(user.id);
-	const userVehicles = await getUserVehicles(user.id);
+	const userSubscriptions = await getUserSubscriptionsWithVehicles(user.id);
+
 
 	return {
 		...user,
-		vehicles: userVehicles,
 		subscriptions: userSubscriptions,
 	};
 };
@@ -72,7 +81,7 @@ export const getAllDetailedUsers = async (): Promise<DetailedUser[]> => {
 	const results = await Promise.allSettled(userPromises);
 
 	const detailedUsers: DetailedUser[] = [];
-	const errors: {userId: number; error: any}[] = [];
+	const errors: { userId: number; error: any }[] = [];
 
 	results.forEach((result, index) => {
 		if (result.status === 'fulfilled') {
