@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import {z} from 'zod';
 import {
 	selectUserSchema,
 	insertUserSchema,
@@ -17,9 +17,12 @@ export type NewVehicle = z.infer<typeof insertVehicleSchema>;
 export type NewSubscription = z.infer<typeof insertSubscriptionSchema>;
 export type Subscription = z.infer<typeof selectSubscriptionSchema>;
 
+export interface DetailedSubscription extends Subscription {
+	vehicle: Vehicle;
+}
+
 export interface DetailedUser extends User {
-	vehicles: Vehicle[];
-	subscriptions: Subscription[];
+	subscriptions: DetailedSubscription[];
 }
 
 export type NavLink = {
