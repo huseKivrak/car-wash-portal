@@ -47,28 +47,21 @@ export async function addSubscription(formInputs: SubscriptionFields) {
 }
 
 export async function deleteSubscription(formData: FormData) {
-	console.log('DELETE SUB CALLED');
 	try {
 		const idString = formData.get('subscription_id') as string;
 		if (!idString) throw new Error('Subscription id required.');
 		const subscriptionId = parseInt(idString);
-
 		const currentDate = new Date();
-		const result = await db
+
+		await db
 			.update(subscriptions)
 			.set({
 				isCancelled: true,
 				cancelledAt: currentDate,
 				subscriptionStatus: 'cancelled',
 			})
-			.where(eq(subscriptions.id, subscriptionId))
-			.returning();
-
-		const cancelledSubscription = result[0];
-		// return {
-		// 	status: 'success',
-		// 	message: `Subscription #${cancelledSubscription.id} cancelled successfully.`,
-		// };
+			.where(eq(subscriptions.id, subscriptionId));
+		console.log('Subscription cancelled.');
 	} catch (error) {
 		return {
 			status: 'server error',
