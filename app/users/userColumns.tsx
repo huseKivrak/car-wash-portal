@@ -42,13 +42,13 @@ import { useDialog } from '@/components/ui/use-dialog';
 
 export const userColumns: ColumnDef<DetailedUser>[] = [
 	{
-		accessorKey: 'fullName',
+		accessorKey: 'name',
 		header: () => <div>NAME</div>,
 		cell: ({ row }) => {
 			const user = row.original;
 			return (
 				<Link href={`users/${user.id}`} className='hover:underline'>
-					<div>{user.fullName}</div>
+					<div>{user.name}</div>
 				</Link>
 			);
 		},
