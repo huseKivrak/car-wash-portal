@@ -13,18 +13,18 @@ export async function updateUser({
 }: {
 	fieldsToUpdate: InsertUser;
 }) {
-	const { id, fullName, phone, email } = insertUserSchema.parse(fieldsToUpdate);
+	const { id, name, phone, email } = insertUserSchema.parse(fieldsToUpdate);
 	try {
 		const updatedRows = await db
 			.update(users)
-			.set({ fullName, phone, email })
+			.set({ name, phone, email })
 			.where(eq(users.id, id!))
 			.returning();
 
 		const updatedUser = updatedRows[0];
 		return {
 			status: 'success',
-			message: `${updatedUser.fullName} has been updated.`,
+			message: `${updatedUser.name} has been updated.`,
 		};
 	} catch (error) {
 		if (error instanceof ZodError) {
