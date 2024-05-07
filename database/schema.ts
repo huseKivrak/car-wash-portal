@@ -81,6 +81,9 @@ export const washes = pgTable('washes', {
 		.references(() => users.id),
 });
 
+export const selectWashSchema = createSelectSchema(washes);
+export const insertWashSchema = createInsertSchema(washes);
+
 //todo: add check restraint for washId XOR subId
 export const purchases = pgTable('purchases', {
 	id: serial('id').primaryKey(),
@@ -91,7 +94,7 @@ export const purchases = pgTable('purchases', {
 	finalPrice: integer('final_price').notNull(),
 	paidOn: timestamp('paid_on'),
 	createdAt: timestamp('created_on').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at').notNull(),
+	updatedAt: timestamp('updated_at'),
 
 	userId: integer('user_id')
 		.notNull()
