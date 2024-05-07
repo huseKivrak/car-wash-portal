@@ -35,7 +35,9 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<Navbar />
-					<main>{children}</main>
+					<main className='container mx-auto max-w-7xl pt-8 flex-grow'>
+						{children}
+					</main>
 					<Sidebar />
 					<Toaster />
 				</ThemeProvider>
