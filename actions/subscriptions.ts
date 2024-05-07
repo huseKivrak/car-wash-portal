@@ -9,6 +9,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { z, ZodError } from 'zod';
 import { makeVehicleTitle } from '@/lib/utils';
+import { revalidatePath } from 'next/cache';
 
 /**
  *
@@ -45,48 +46,37 @@ export async function addSubscription(formInputs: SubscriptionFields) {
 	}
 }
 
-export async function deleteSubscription(subscriptionId: number) {
+export async function deleteSubscription(formData: FormData) {
+	console.log('DELETE SUB CALLED');
 	try {
-		const rows = await db
-			.select()
-			.from(subscriptions)
-			.where(eq(subscriptions.id, subscriptionId));
-		const subscriptionToDelete = rows[0];
-		if (!subscriptionToDelete) {
-			return {
-				status: 'error',
-				message: `Subscription does not exist. Id:${subscriptionId}`,
-			};
-		}
+		const idString = formData.get('subscription_id') as string;
+		if (!idString) throw new Error('Subscription id required.');
+		const subscriptionId = parseInt(idString);
 
 		const currentDate = new Date();
 		const result = await db
 			.update(subscriptions)
-			.set({ isCancelled: true, cancelledAt: currentDate })
+			.set({
+				isCancelled: true,
+				cancelledAt: currentDate,
+				subscriptionStatus: 'cancelled',
+			})
+			.where(eq(subscriptions.id, subscriptionId))
 			.returning();
 
 		const cancelledSubscription = result[0];
-		return {
-			status: 'success',
-			message: `Subscription #${cancelledSubscription.id} cancelled successfully.`,
-		};
+		// return {
+		// 	status: 'success',
+		// 	message: `Subscription #${cancelledSubscription.id} cancelled successfully.`,
+		// };
 	} catch (error) {
-		if (error instanceof ZodError) {
-			console.error('Zod issues:', error.issues);
-			return {
-				status: 'validation error',
-				errors: error.issues.map((issue) => ({
-					path: issue.path,
-					message: issue.message,
-				})),
-			};
-		} else {
-			return {
-				status: 'server error',
-				message: `An error occured while cancelling subscription: ${error}`,
-			};
-		}
+		return {
+			status: 'server error',
+			message: `An error occured while cancelling subscription: ${error}`,
+		};
 	}
+
+	revalidatePath('/', 'layout');
 }
 
 /**
