@@ -31,6 +31,7 @@ export function SubscriptionCard({
 				</Badge>
 			</CardHeader>
 			<CardContent className='w-80 text-sm text-muted-foreground'>
+				<div>Plate: {licensePlate}</div>
 				<div className='font-bold'>
 					Remaining Washes: {subscription.remainingWashes}
 				</div>
@@ -38,9 +39,7 @@ export function SubscriptionCard({
 				<div className='font-semibold'>
 					Expires: {endDate?.toLocaleDateString()}
 				</div>
-				<div>Plate: {licensePlate}</div>
 			</CardContent>
-			<CardFooter></CardFooter>
 		</Card>
 	);
 }
