@@ -1,7 +1,12 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { DetailedUser, Subscription, Vehicle } from '@/types/types';
+import {
+	DetailedSubscription,
+	DetailedUser,
+	Subscription,
+	Vehicle,
+} from '@/types/types';
 import {
 	MoreHorizontal,
 	User,
@@ -33,8 +38,9 @@ import {
 import Link from 'next/link';
 import { DropdownMenuGroup } from '@radix-ui/react-dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import { toast } from '@/components/ui/use-toast';
+import { SubscriptionCard } from '@/components/SubscriptionCard';
+import { getStatusColor } from '@/lib/utils';
 
 export const userColumns: ColumnDef<DetailedUser>[] = [
 	{
@@ -53,7 +59,6 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 		accessorKey: 'email',
 		header: 'EMAIL',
 		cell: ({ row }) => {
-			const email = row.original.email;
 			return (
 				<div className='flex'>
 					{row.getValue('email')}
@@ -66,83 +71,28 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 		accessorKey: 'subscriptions',
 		header: () => <div>SUBSCRIPTION STATUS</div>,
 		cell: ({ row }) => {
-			const subscriptions = row.getValue('subscriptions') as Subscription[];
+			const subscriptions = row.getValue(
+				'subscriptions'
+			) as DetailedSubscription[];
 			const subscription = subscriptions[0];
-			const vehicle = row.original.vehicles[0];
-			const { licensePlate, make, model, year, color } = vehicle;
-			const { status, type, startDate, endDate } = subscription;
+			const statusColor = getStatusColor(subscription.subscriptionStatus);
 			return (
-				<div className='flex justify-center space-x-2'>
-					<HoverCard>
-						<HoverCardTrigger>
-							<Badge
-								variant='outline'
-								className={`w-1 h-1 p-2' ${
-									status === 'active'
-										? 'bg-green-600'
-										: status === 'overdue'
-										? 'bg-orange-600'
-										: ''
-								}`}
-							/>
-							<HoverCardContent className='flex justify-between space-x-2'>
-								<div className='space-y-1'>
-									<h4
-										className={`w-1 h-1 p-2' ${
-											status === 'active'
-												? 'bg-green-600'
-												: status === 'overdue'
-												? 'bg-orange-600'
-												: ''
-										}`}
-									>
-										{status.toUpperCase()}
-									</h4>
-									<div className='flex flex-col'>
-										<span className='text-sm '>{`${year} ${make} ${model}`}</span>
-										<span></span>
-										<span className='text-xs'>Plate: {licensePlate}</span>
-									</div>
-
-									<div className='flex flex-col text-xs items-start pt-2'>
-										<span className='text-muted-foreground'>
-											Started: {startDate.toLocaleDateString()}
-										</span>
-										<span className='font-semibold'>
-											Expires: {endDate?.toLocaleDateString()}
-										</span>
-									</div>
-								</div>
-							</HoverCardContent>
-						</HoverCardTrigger>
-					</HoverCard>
-				</div>
+				<HoverCard>
+					<HoverCardTrigger>
+						<Badge
+							variant='outline'
+							className='w-4 h-4 aspect-auto'
+							style={{ backgroundColor: statusColor }}
+						/>
+					</HoverCardTrigger>
+					<HoverCardContent>
+						<SubscriptionCard subscription={subscription} />;
+					</HoverCardContent>
+				</HoverCard>
 			);
 		},
 	},
-	// {
-	// 	id: 'washes',
-	// 	header: 'WASHES LEFT (TOTAL)',
-	// 	cell: ({ row }) => {
-	// 		const subscriptions = row.getValue('subscriptions') as Subscription[];
-	// 		const { remainingWashes, totalWashes } = subscriptions[0];
-	// 		return <div>{`${remainingWashes} ( ${totalWashes} )`}</div>;
-	// 	},
-	// },
-	// {
-	// 	id: 'subscriptionEndDate',
-	// 	header: 'EXPIRES',
-	// 	cell: ({ row }) => {
-	// 		const subscriptions = row.getValue('subscriptions') as Subscription[];
-	// 		const endDate = subscriptions[0].endDate;
-	// 		const formatted = endDate?.toLocaleDateString('en-us', {
-	// 			year: '2-digit',
-	// 			month: '2-digit',
-	// 			day: '2-digit',
-	// 		});
-	// 		return <div>{formatted}</div>;
-	// 	},
-	// },
+
 	{
 		id: 'actions',
 		cell: ({ row }) => {
