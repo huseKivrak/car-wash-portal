@@ -1,12 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import {
-	DetailedSubscription,
-	DetailedUser,
-	Subscription,
-	Vehicle,
-} from '@/types/types';
+import { DetailedSubscription, DetailedUser } from '@/types/types';
 import {
 	MoreHorizontal,
 	User,
@@ -41,6 +36,9 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
 import { getStatusColor } from '@/lib/utils';
+import { DeleteModal } from '@/components/DeleteModal';
+import { deleteUser } from '@/actions/users';
+import { useDialog } from '@/components/ui/use-dialog';
 
 export const userColumns: ColumnDef<DetailedUser>[] = [
 	{
@@ -69,26 +67,32 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 	},
 	{
 		accessorKey: 'subscriptions',
-		header: () => <div>SUBSCRIPTION STATUS</div>,
+		header: () => (
+			<div className='flex justify-center'>SUBSCRIPTION STATUS</div>
+		),
 		cell: ({ row }) => {
 			const subscriptions = row.getValue(
 				'subscriptions'
 			) as DetailedSubscription[];
-			const subscription = subscriptions[0];
-			const statusColor = getStatusColor(subscription.subscriptionStatus);
 			return (
-				<HoverCard>
-					<HoverCardTrigger>
-						<Badge
-							variant='outline'
-							className='w-4 h-4 aspect-auto'
-							style={{ backgroundColor: statusColor }}
-						/>
-					</HoverCardTrigger>
-					<HoverCardContent>
-						<SubscriptionCard subscription={subscription} />;
-					</HoverCardContent>
-				</HoverCard>
+				<div className='flex justify-evenly'>
+					{subscriptions.map((sub) => (
+						<HoverCard key={sub.createdAt.toString()}>
+							<HoverCardTrigger>
+								<Badge
+									variant='outline'
+									className='w-6 h-6 rounded-full'
+									style={{
+										backgroundColor: getStatusColor(sub.subscriptionStatus),
+									}}
+								/>
+							</HoverCardTrigger>
+							<HoverCardContent asChild>
+								<SubscriptionCard subscription={sub} />
+							</HoverCardContent>
+						</HoverCard>
+					))}
+				</div>
 			);
 		},
 	},
@@ -97,6 +101,8 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 		id: 'actions',
 		cell: ({ row }) => {
 			const user = row.original;
+			const deleteDialog = useDialog();
+			const editDialog = useDialog();
 
 			return (
 				<DropdownMenu>
@@ -106,57 +112,37 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 							<MoreHorizontal className='h-4 w-4' />
 						</Button>
 					</DropdownMenuTrigger>
+
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>User Actions</DropdownMenuLabel>
-
-						<DropdownMenuSeparator />
-
 						<DropdownMenuGroup>
-							<DropdownMenuSub>
-								<DropdownMenuSubTrigger>
-									<User className='mr-2 h-4 w-4' />
-									<span>User</span>
-								</DropdownMenuSubTrigger>
-								<DropdownMenuPortal>
-									<DropdownMenuSubContent>
-										<DropdownMenuItem>
-											<Link
-												href={`users/${user.id}`}
-												className='hover:underline flex'
-											>
-												<User className='mr-1 h-4 w-4' />
-												<span>Details</span>
-											</Link>
-										</DropdownMenuItem>
-										<DropdownMenuItem>
-											<LucideEdit className='mr-1 h-4 w-4' />
-											<span>Edit</span>
-										</DropdownMenuItem>
-
-										<DropdownMenuItem
-											onClick={() =>
-												toast({
-													title: 'Are you sure you want to delete this user?!',
-												})
-											}
-										>
-											<UserX className='mr-1 h-4 w-4 ' />
-											<span>Delete</span>
-										</DropdownMenuItem>
-									</DropdownMenuSubContent>
-								</DropdownMenuPortal>
-							</DropdownMenuSub>
 							<DropdownMenuItem>
 								<Link
-									href={`/users/${user.id}/subscriptions`}
+									href={`users/${user.id}`}
 									className='hover:underline flex'
 								>
-									<AppWindow className='mr-1 h-4 w-4' />
-									<span>Subscriptions</span>
+									<User className='mr-1 h-4 w-4' />
+									<span>User Details</span>
 								</Link>
+							</DropdownMenuItem>
+
+							<DropdownMenuItem onSelect={editDialog.trigger}>
+								<LucideEdit className='mr-1 h-4 w-4' />
+								<span>Edit</span>
+							</DropdownMenuItem>
+
+							<DropdownMenuItem onSelect={deleteDialog.trigger}>
+								<UserX className='mr-1 h-4 w-4' />
+								<span>Delete</span>
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 					</DropdownMenuContent>
+
+					<DeleteModal
+						id={user.id}
+						action={deleteUser}
+						dialogControl={deleteDialog}
+					/>
 				</DropdownMenu>
 			);
 		},
