@@ -34,7 +34,7 @@ const generateSubscriptions = (vehicles: Vehicle[]): NewSubscription[] => {
 	return vehicles.map((vehicle) => ({
 		vehicleId: vehicle.id,
 		subscriptionType: 'basic',
-		status: 'active',
+		subscriptionStatus: 'active',
 		interval: 'monthly',
 		startDate: faker.date.past(),
 		endDate: faker.date.future(),
