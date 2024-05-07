@@ -19,7 +19,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, User, LucideEdit, FolderX } from 'lucide-react';
+import { MoreHorizontal, LucideEdit, FolderX } from 'lucide-react';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { useDialog } from '@/components/ui/use-dialog';
 import { ColumnDef } from '@tanstack/react-table';
@@ -56,7 +56,7 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 			const { subscriptionStatus } = row.original;
 			const statusColor = getStatusColor(subscriptionStatus);
 			return (
-				<div className=''>
+				<div>
 					<HoverCard>
 						<HoverCardTrigger>
 							<Badge
@@ -81,7 +81,6 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 		cell: ({ row }) => {
 			const sub = row.original;
 			const deleteDialog = useDialog();
-			const detailsDialog = useDialog();
 			const editDialog = useDialog();
 
 			return (
@@ -96,10 +95,6 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 						<DropdownMenuGroup>
-							<DropdownMenuItem onSelect={detailsDialog.trigger}>
-								<User className='mr-1 h-4 w-4' />
-								<span>Details</span>
-							</DropdownMenuItem>
 							<DropdownMenuItem onSelect={editDialog.trigger}>
 								<LucideEdit className='mr-1 h-4 w-4' />
 								<span>Edit</span>
@@ -110,15 +105,6 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 					</DropdownMenuContent>
-
-					<Dialog {...detailsDialog.props}>
-						<DialogContent>
-							Subscription Details Here
-							<DialogClose asChild>
-								<Button>Close</Button>
-							</DialogClose>
-						</DialogContent>
-					</Dialog>
 
 					<Dialog {...editDialog.props}>
 						<DialogContent>
