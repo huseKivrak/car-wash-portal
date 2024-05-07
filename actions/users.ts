@@ -5,6 +5,7 @@ import { users } from '@/database/schema';
 import { eq } from 'drizzle-orm';
 import { z, ZodError } from 'zod';
 import { insertUserSchema } from '@/database/schema';
+import { revalidatePath } from 'next/cache';
 
 type InsertUser = z.infer<typeof insertUserSchema>;
 export async function updateUser({
@@ -44,19 +45,16 @@ export async function updateUser({
 	}
 }
 
-export async function deleteUser(userId: number) {
+export async function deleteUser(formData: FormData) {
 	try {
-		const deletedRows = await db
-			.delete(users) // todo: .update(users).set({ cancelledAt: new Date() })
-			.where(eq(users.id, userId))
-			.returning({ name: users.fullName });
-
-		const deletedUser = deletedRows[0];
-
-		return {
-			status: 'success',
-			message: `${deletedUser.name} has been deleted`,
-		};
+		const idString = formData.get('user_id') as string;
+		const userId = parseInt(idString);
+		const currentTime = new Date();
+		await db
+			.update(users)
+			.set({ cancelledAt: currentTime, isCancelled: true })
+			.where(eq(users.id, userId));
+		console.log('User account cancelled.');
 	} catch (error) {
 		console.error(error);
 		return {
@@ -64,4 +62,6 @@ export async function deleteUser(userId: number) {
 			message: `An error occured during deletion: ${error} `,
 		};
 	}
+
+	revalidatePath('/', 'layout');
 }
