@@ -37,6 +37,7 @@ next-env.d.ts
 
 # migration files
 /database/migrations
+drizzle/meta/_journal.json
 
 prompt.md
 to-fix.md
