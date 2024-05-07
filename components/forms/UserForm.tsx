@@ -59,7 +59,43 @@ export function UserForm({ user }: { user?: DetailedUser }) {
 									value={field.value || ''}
 								/>
 							</FormControl>
-							<FormDescription>Edit user's name.</FormDescription>
+							<FormDescription>Edit customer's name.</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='email'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Email</FormLabel>
+							<FormControl>
+								<Input
+									placeholder='john@doe.com'
+									{...field}
+									value={field.value || ''}
+								/>
+							</FormControl>
+							<FormDescription>Edit customer's email.</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='phone'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Phone</FormLabel>
+							<FormControl>
+								<Input
+									placeholder='123-456-7890'
+									{...field}
+									value={field.value || ''}
+								/>
+							</FormControl>
+							<FormDescription>Edit customer's phone.</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
