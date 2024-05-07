@@ -1,4 +1,9 @@
-import { DetailedUser, Vehicle, Subscription, DetailedSubscription } from '@/types/types';
+import {
+	DetailedUser,
+	Vehicle,
+	Subscription,
+	DetailedSubscription,
+} from '@/types/types';
 import { db } from '.';
 import { vehicles, subscriptions, users } from './schema';
 import { eq } from 'drizzle-orm';
@@ -25,26 +30,26 @@ export const getUserVehicles = async (userId: number): Promise<Vehicle[]> => {
  */
 export const getUserSubscriptionsWithVehicles = async (
 	userId: number
-):Promise<DetailedSubscription[]> => {
+): Promise<DetailedSubscription[]> => {
 	const rows = await db
 		.select({
-subscriptions,
-vehicle:vehicles
+			subscriptions,
+			vehicle: vehicles,
+			user: users,
 		})
 		.from(subscriptions)
 		.leftJoin(vehicles, eq(subscriptions.vehicleId, vehicles.id))
 		.leftJoin(users, eq(vehicles.userId, users.id))
 		.where(eq(users.id, userId));
 
-		//@ts-ignore
+	//@ts-ignore
 	return rows.map((row) => {
 		return {
 			...row.subscriptions,
-			vehicle:row.vehicle
-		}
-	})
-
-
+			vehicle: row.vehicle,
+			user: row.user,
+		};
+	});
 };
 
 /**
@@ -63,7 +68,6 @@ export const getDetailedUser = async (
 
 	const user = rows[0];
 	const userSubscriptions = await getUserSubscriptionsWithVehicles(user.id);
-
 
 	return {
 		...user,
