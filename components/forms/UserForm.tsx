@@ -25,7 +25,7 @@ export function UserForm({ user }: { user?: DetailedUser }) {
 	const form = useForm<UserInputs>({
 		resolver: zodResolver(insertUserSchema),
 		defaultValues: {
-			fullName: user?.fullName || '',
+			name: user?.name || '',
 			email: user?.email || '',
 			phone: user?.phone || '',
 		},
@@ -48,7 +48,7 @@ export function UserForm({ user }: { user?: DetailedUser }) {
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
 				<FormField
 					control={form.control}
-					name='fullName'
+					name='name'
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Name</FormLabel>
