@@ -9,6 +9,6 @@ export const navLinks = [
 	},
 	{
 		label: 'Purchases',
-		href: '/puraches',
+		href: '/purchases',
 	},
 ];

@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function getStatusColor(status: string) {
 	const statusMap = {
 		active: '#10B981', // green-500
-		paid: '#047857', // green-700
+		paid: '#10B981', // green-500
 		cancelled: '#8a3c1a', // stone-700
 		pending: '#d6d3d1', // stone-500
 		failed: '#dc2626', // red-600
