@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 import {
 	selectUserSchema,
 	insertUserSchema,
@@ -19,6 +19,7 @@ export type Subscription = z.infer<typeof selectSubscriptionSchema>;
 
 export interface DetailedSubscription extends Subscription {
 	vehicle: Vehicle;
+	user: User;
 }
 
 export interface DetailedUser extends User {
