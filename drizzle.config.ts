@@ -14,8 +14,9 @@ if (!connectionString) throw new Error('DATABASE_URL not found in .env.local');
 export default {
 	schema: './database/schema.ts',
 	driver: 'pg',
-	out: './drizzle',
+	out: './database/migrations',
 	dbCredentials: {
 		connectionString: connectionString,
 	},
+	verbose: true,
 } satisfies Config;
