@@ -23,14 +23,7 @@ export function DeleteModal({
 				Are you sure you want to delete this subscription?
 				<form>
 					<input type='hidden' value={id} name='subscription_id' />
-					<SubmitButton
-						formAction={action}
-						pendingText='Deleting...'
-						onSubmit={() => {
-							setTimeout(() => console.log('timeout'), 100);
-							dialogControl.dismiss();
-						}}
-					>
+					<SubmitButton formAction={action} pendingText='Deleting...'>
 						Delete
 					</SubmitButton>
 				</form>
