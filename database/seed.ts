@@ -16,7 +16,7 @@ import {
 
 const generateUsers = (count: number): NewUser[] => {
 	return Array.from({ length: count }, () => ({
-		fullName: faker.person.fullName(),
+		name: faker.person.fullName(),
 		phone: faker.phone.number(),
 		email: faker.internet.email(),
 		createdAt: faker.date.past(),
@@ -37,6 +37,7 @@ const generateVehicles = (users: User[]): NewVehicle[] => {
 const generateSubscriptions = (vehicles: Vehicle[]): NewSubscription[] => {
 	return vehicles.map((vehicle) => ({
 		vehicleId: vehicle.id,
+		userId: vehicle.userId,
 		subscriptionType: 'basic',
 		subscriptionStatus: 'active',
 		interval: 'monthly',

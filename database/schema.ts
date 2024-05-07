@@ -5,31 +5,33 @@ import {
 	timestamp,
 	integer,
 	boolean,
-	pgView,
-	pgEnum,
+	uniqueIndex,
+	index,
 } from 'drizzle-orm/pg-core';
-import { eq } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import { createSelectSchema, createInsertSchema } from 'drizzle-zod';
-import { z } from 'zod';
 
-// const roleEnum = pgEnum('role', ['admin', 'csr', 'dev', 'user', 'cancelled']);
-// const subscriptionTypeEnum = pgEnum('subscription_type', ['basic', 'premium']);
-// const subscriptionStatus = pgEnum('status', ['active', 'cancelled', 'overdue']);
-// const paymentStatus = pgEnum('payment_status', ['paid', 'pending', 'failed']);
-// const itemTypeEnum = pgEnum('item_type', ['subscription', 'wash']);
-
-export const users = pgTable('users', {
-	id: serial('id').primaryKey(),
-	fullName: text('full_name'),
-	phone: text('phone'),
-	email: text('email').notNull().unique(),
-	role: text('role').notNull().default('user'),
-	isStaff: boolean('is_staff').default(false),
-	isCancelled: boolean('is_cancelled').notNull().default(false),
-	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at'),
-	cancelledAt: timestamp('cancelled_at'),
-});
+export const users = pgTable(
+	'users',
+	{
+		id: serial('id').primaryKey(),
+		name: text('name').notNull(),
+		phone: text('phone'),
+		email: text('email').notNull().unique(),
+		role: text('role').notNull().default('user'),
+		isStaff: boolean('is_staff').default(false),
+		isCancelled: boolean('is_cancelled').notNull().default(false),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at'),
+		cancelledAt: timestamp('cancelled_at'),
+	},
+	(table) => {
+		return {
+			nameIdx: index('name_idx').on(table.name),
+			emailIdx: uniqueIndex('email_idx').on(table.email),
+		};
+	}
+);
 
 export const selectUserSchema = createSelectSchema(users);
 export const insertUserSchema = createInsertSchema(users);
@@ -64,6 +66,9 @@ export const subscriptions = pgTable('subscriptions', {
 	updatedAt: timestamp('updated_at'),
 	isCancelled: boolean('is_cancelled').notNull().default(false),
 	cancelledAt: timestamp('cancelled_at'),
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id),
 	vehicleId: integer('vehicle_id')
 		.notNull()
 		.references(() => vehicles.id),
@@ -106,40 +111,56 @@ export const purchases = pgTable('purchases', {
 export const selectPurchaseSchema = createSelectSchema(purchases);
 export const insertPurchaseSchema = createInsertSchema(purchases);
 
-/** Views
- * Quick access to common datasets:
- * - Active subscriptions
- * - Overdue subscriptions
- * - Cancelled subscriptions
- * - Purchases of washes
- * - Purchases of subscriptions
- */
+//Relations
+export const userRelations = relations(users, ({ many }) => ({
+	subscriptions: many(subscriptions),
+	vehicles: many(vehicles),
+	washes: many(washes),
+	purchases: many(purchases),
+}));
 
-export const activeSubscriptions = pgView('active_subscriptions_view').as(
-	(qb) =>
-		qb.select().from(subscriptions).where(eq(subscriptions.isCancelled, false))
+export const vehicleRelations = relations(vehicles, ({ one }) => ({
+	owner: one(users, { fields: [vehicles.userId], references: [users.id] }),
+}));
+
+export const subscriptionRelations = relations(
+	subscriptions,
+	({ one, many }) => ({
+		user: one(users, {
+			fields: [subscriptions.userId],
+			references: [users.id],
+		}),
+		vehicle: one(vehicles, {
+			fields: [subscriptions.vehicleId],
+			references: [vehicles.id],
+		}),
+		washes: many(washes),
+		purchases: many(purchases),
+	})
 );
 
-export const overdueSubscriptionsView = pgView('overdue_subscriptions_view').as(
-	(qb) =>
-		qb
-			.select()
-			.from(subscriptions)
-			.where(eq(subscriptions.subscriptionStatus, 'overdue'))
-);
+export const washRelations = relations(washes, ({ one }) => ({
+	user: one(users, {
+		fields: [washes.userId],
+		references: [users.id],
+	}),
+	subscriptions: one(subscriptions, {
+		fields: [washes.subscriptionId],
+		references: [subscriptions.id],
+	}),
+}));
 
-export const cancelledSubsriptionsView = pgView(
-	'cancelled_subscriptions_view'
-).as((qb) =>
-	qb.select().from(subscriptions).where(eq(subscriptions.isCancelled, true))
-);
-
-export const washPurchasesView = pgView('wash_purchases_view').as((qb) =>
-	qb.select().from(purchases).where(eq(purchases.itemType, 'wash'))
-);
-
-export const subscriptionPurchasesView = pgView(
-	'subscription_purchases_view'
-).as((qb) =>
-	qb.select().from(purchases).where(eq(purchases.itemType, 'subscription'))
-);
+export const purchaseRelations = relations(purchases, ({ one }) => ({
+	user: one(users, {
+		fields: [purchases.userId],
+		references: [users.id],
+	}),
+	wash: one(washes, {
+		fields: [purchases.washId],
+		references: [washes.id],
+	}),
+	subscription: one(subscriptions, {
+		fields: [purchases.subscriptionId],
+		references: [subscriptions.id],
+	}),
+}));
