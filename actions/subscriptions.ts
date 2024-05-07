@@ -1,15 +1,12 @@
 'use server';
 
 import { db } from '@/database';
-import {
-	subscriptions,
-	insertSubscriptionSchema,
-	vehicles,
-} from '@/database/schema';
+import { subscriptions, insertSubscriptionSchema } from '@/database/schema';
 import { eq } from 'drizzle-orm';
 import { z, ZodError } from 'zod';
-import { makeVehicleTitle } from '@/lib/utils';
+
 import { revalidatePath } from 'next/cache';
+import { NewSubscription } from '@/types/types';
 
 /**
  *
@@ -46,11 +43,8 @@ export async function addSubscription(formInputs: SubscriptionFields) {
 	}
 }
 
-export async function deleteSubscription(formData: FormData) {
+export async function cancelSubscription(subscriptionId: number) {
 	try {
-		const idString = formData.get('subscription_id') as string;
-		if (!idString) throw new Error('Subscription id required.');
-		const subscriptionId = parseInt(idString);
 		const currentDate = new Date();
 
 		await db
@@ -58,6 +52,7 @@ export async function deleteSubscription(formData: FormData) {
 			.set({
 				isCancelled: true,
 				cancelledAt: currentDate,
+				updatedAt: currentDate,
 				subscriptionStatus: 'cancelled',
 			})
 			.where(eq(subscriptions.id, subscriptionId));
@@ -82,29 +77,42 @@ export async function transferSubscription(
 	subscriptionId: number,
 	vehicleId: number
 ) {
-	const rows = await db
-		.select()
-		.from(vehicles)
-		.where(eq(vehicles.id, vehicleId));
-	const vehicle = rows[0];
-
-	if (!vehicle)
+	//get old subscription to clone into new
+	const currentSubscription = await db.query.subscriptions.findFirst({
+		where: eq(subscriptions.id, subscriptionId),
+	});
+	if (!currentSubscription) {
+		return { status: 'error', message: 'Original subscription not found.' };
+	} else if (currentSubscription.vehicleId === vehicleId) {
 		return {
 			status: 'error',
-			message: `Vehicle does not exist. Id: ${vehicleId}`,
+			message: 'Subscription is already for this vehicle.',
 		};
+	}
 
-	const result = await db
-		.update(subscriptions)
-		.set({ vehicleId })
-		.where(eq(subscriptions.id, subscriptionId))
+	//cancel old subscription:
+	await cancelSubscription(subscriptionId);
+
+	const currentDate = new Date();
+	//create new subscription entry with new vehicle Id
+	const newSubscriptionData: NewSubscription = {
+		...currentSubscription,
+		vehicleId,
+		isCancelled: false,
+		cancelledAt: null,
+		updatedAt: currentDate,
+		subscriptionStatus: 'active',
+	};
+
+	const newSubscriptionResult = await db
+		.insert(subscriptions)
+		.values(newSubscriptionData)
 		.returning();
-
-	const updatedSubscription = result[0];
-	const vehicleTitle = makeVehicleTitle(vehicle);
+	const newSubscription = newSubscriptionResult[0];
+	revalidatePath('/');
 
 	return {
 		status: 'success',
-		message: `Subscription ${updatedSubscription.id} updated - ${vehicleTitle}) `,
+		message: `Subscription transfered to Vehicle #${vehicleId}. New Id: ${newSubscription.id}.`,
 	};
 }
