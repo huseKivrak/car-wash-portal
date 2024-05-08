@@ -22,7 +22,7 @@ export const users = pgTable(
 		isStaff: boolean('is_staff').default(false),
 		isCancelled: boolean('is_cancelled').notNull().default(false),
 		createdAt: timestamp('created_at').notNull().defaultNow(),
-		updatedAt: timestamp('updated_at'),
+		updatedAt: timestamp('updated_at').notNull().defaultNow(),
 		cancelledAt: timestamp('cancelled_at'),
 	},
 	(table) => {
@@ -39,19 +39,25 @@ export const insertUserSchema = createInsertSchema(users);
 export const vehicles = pgTable('vehicles', {
 	id: serial('id').primaryKey(),
 	licensePlate: text('license_plate').notNull(),
-	make: text('make'),
-	model: text('model'),
-	year: integer('year'),
-	color: text('color'),
+	make: text('make').notNull(),
+	model: text('model').notNull(),
+	year: integer('year').notNull(),
+	color: text('color').notNull(),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at'),
+	updatedAt: timestamp('updated_at').notNull().defaultNow(),
 	userId: integer('user_id')
 		.notNull()
 		.references(() => users.id),
 });
 
 export const selectVehicleSchema = createSelectSchema(vehicles);
-export const insertVehicleSchema = createInsertSchema(vehicles);
+export const insertVehicleSchema = createInsertSchema(vehicles, {
+	licensePlate: (schema) => schema.licensePlate.min(7),
+	make: (schema) => schema.make.min(3),
+	model: (schema) => schema.model.min(3),
+	year: (schema) => schema.year.min(1900).max(2099),
+	color: (schema) => schema.color.min(3),
+});
 
 export const subscriptions = pgTable('subscriptions', {
 	id: serial('id').primaryKey(),
@@ -63,7 +69,10 @@ export const subscriptions = pgTable('subscriptions', {
 	totalWashes: integer('total_washes').notNull().default(10),
 	remainingWashes: integer('remaining_washes').notNull().default(10),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at'),
+	updatedAt: timestamp('updated_at').notNull().defaultNow(),
+	isTransferred: boolean('is_transferred').notNull().default(false),
+	transferredAt: timestamp('transferred_at'),
+	transferredSubscriptionId: integer('transferred_subscription_id'),
 	isCancelled: boolean('is_cancelled').notNull().default(false),
 	cancelledAt: timestamp('cancelled_at'),
 	userId: integer('user_id')
@@ -80,6 +89,7 @@ export const insertSubscriptionSchema = createInsertSchema(subscriptions);
 export const washes = pgTable('washes', {
 	id: serial('id').primaryKey(),
 	createdAt: timestamp('washed_on').notNull().defaultNow(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow(),
 	subscriptionId: integer('subscription_id').references(() => subscriptions.id),
 	userId: integer('user_id')
 		.notNull()
@@ -99,8 +109,7 @@ export const purchases = pgTable('purchases', {
 	finalPrice: integer('final_price').notNull(),
 	paidOn: timestamp('paid_on'),
 	createdAt: timestamp('created_on').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at'),
-
+	updatedAt: timestamp('updated_at').notNull().defaultNow(),
 	userId: integer('user_id')
 		.notNull()
 		.references(() => users.id),
