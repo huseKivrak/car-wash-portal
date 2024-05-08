@@ -25,13 +25,11 @@ import { Pagination } from './pagination';
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	dataType: 'user' | 'subscription';
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
-	dataType,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -53,20 +51,14 @@ export function DataTable<TData, TValue>({
 		<div>
 			<div className='rounded-md border'>
 				<div className='flex items-center py-4'>
-					{dataType === 'user' ? (
-						<Input
-							placeholder='Filter emails...'
-							value={
-								(table.getColumn('email')?.getFilterValue() as string) ?? ''
-							}
-							onChange={(event) =>
-								table.getColumn('email')?.setFilterValue(event.target.value)
-							}
-							className='max-w-sm'
-						/>
-					) : (
-						<Input placeholder='Filter user...' className='max-w-sm' />
-					)}
+					<Input
+						placeholder='Filter emails...'
+						value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
+						onChange={(event) =>
+							table.getColumn('email')?.setFilterValue(event.target.value)
+						}
+						className='max-w-sm'
+					/>
 				</div>
 				<Table>
 					<TableHeader>
