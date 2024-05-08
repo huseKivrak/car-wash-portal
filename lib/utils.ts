@@ -12,8 +12,9 @@ export function getStatusColor(status: string) {
 		paid: '#10B981', // green-500
 		cancelled: '#8a3c1a', // stone-700
 		pending: '#d6d3d1', // stone-500
-		failed: '#dc2626', // red-600
-		overdue: '#dc2626', // red-600
+		failed: '#b91c1c', // red-700
+		overdue: '#b91c1c', // red-700
+		transferred: '#b45309', //amber-700
 	};
 
 	type StatusKey = keyof typeof statusMap;
@@ -24,5 +25,22 @@ export function getStatusColor(status: string) {
 
 export function makeVehicleTitle(vehicle: Vehicle) {
 	const { year, make, model } = vehicle;
-	return `${year} ${make} ${model}`;
+	return `${year} ${make} ${model}`.toUpperCase();
 }
+
+export function formatDateTime(date: Date, includeTime: boolean = true) {
+	const options: Intl.DateTimeFormatOptions = {
+		weekday: 'short',
+		year: '2-digit',
+		month: 'numeric',
+		day: 'numeric',
+	};
+
+	if (includeTime) {
+		options.hour = '2-digit';
+		options.minute = '2-digit';
+	}
+
+	const dateTimeFormatter = new Intl.DateTimeFormat('en-US', options);
+	return dateTimeFormatter.format(date);
+};
