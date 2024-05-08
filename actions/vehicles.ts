@@ -4,17 +4,16 @@ import { insertVehicleSchema, vehicles } from '@/database/schema';
 import { db } from '@/database';
 import { z, ZodError } from 'zod';
 import { makeVehicleTitle } from '@/lib/utils';
+import { revalidatePath } from 'next/cache';
 
-type VehicleFields = z.infer<typeof insertVehicleSchema>;
-export async function addVehicle(formInputs: VehicleFields) {
+type VehicleInputs = z.infer<typeof insertVehicleSchema>;
+export async function addVehicle(formInputs: VehicleInputs) {
+	let vehicleTitle;
 	try {
-		const vehicleValues = insertVehicleSchema.parse(formInputs);
-		const result = await db.insert(vehicles).values(vehicleValues).returning();
-		const vehicleTitle = makeVehicleTitle(result[0]);
-		return {
-			status: 'success',
-			message: `Vehicle added successfully: ${vehicleTitle}`,
-		};
+		const values = insertVehicleSchema.parse(formInputs);
+
+		const result = await db.insert(vehicles).values(values).returning();
+		vehicleTitle = makeVehicleTitle(result[0]);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			console.error('Zod issues:', error.issues);
@@ -32,4 +31,10 @@ export async function addVehicle(formInputs: VehicleFields) {
 			};
 		}
 	}
+
+	revalidatePath('/');
+	return {
+		status: 'success',
+		message: `${vehicleTitle} created.`,
+	};
 }
