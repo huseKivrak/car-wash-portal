@@ -28,6 +28,7 @@ export type Purchase = z.infer<typeof selectPurchaseSchema>;
 export type NewPurchase = z.infer<typeof insertPurchaseSchema>;
 
 export interface DetailedSubscription extends Subscription {
+	user: User;
 	vehicle: Vehicle;
 	washes: Wash[];
 	purchases: Purchase[];
