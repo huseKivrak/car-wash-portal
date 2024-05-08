@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import { z, ZodError } from 'zod';
 
 import { revalidatePath } from 'next/cache';
-import { NewSubscription } from '@/types/types';
+import { NewSubscription, Subscription } from '@/types/types';
 
 /**
  *
@@ -44,10 +44,11 @@ export async function addSubscription(formInputs: SubscriptionFields) {
 }
 
 export async function cancelSubscription(subscriptionId: number) {
+	let cancelledSubscription: Subscription;
 	try {
 		const currentDate = new Date();
 
-		await db
+		const result = await db
 			.update(subscriptions)
 			.set({
 				isCancelled: true,
@@ -55,8 +56,9 @@ export async function cancelSubscription(subscriptionId: number) {
 				updatedAt: currentDate,
 				subscriptionStatus: 'cancelled',
 			})
-			.where(eq(subscriptions.id, subscriptionId));
-		console.log('Subscription cancelled.');
+			.where(eq(subscriptions.id, subscriptionId))
+			.returning();
+		cancelledSubscription = result[0];
 	} catch (error) {
 		return {
 			status: 'server error',
@@ -65,6 +67,10 @@ export async function cancelSubscription(subscriptionId: number) {
 	}
 
 	revalidatePath('/', 'layout');
+	return {
+		status: 'success',
+		message: `Subscription #${cancelledSubscription.id} cancelled successfully.`,
+	};
 }
 
 /**
@@ -77,7 +83,7 @@ export async function transferSubscription(
 	subscriptionId: number,
 	vehicleId: number
 ) {
-	//get old subscription to clone into new
+	//get current subscription
 	const currentSubscription = await db.query.subscriptions.findFirst({
 		where: eq(subscriptions.id, subscriptionId),
 	});
@@ -86,20 +92,15 @@ export async function transferSubscription(
 	} else if (currentSubscription.vehicleId === vehicleId) {
 		return {
 			status: 'error',
-			message: 'Subscription is already for this vehicle.',
+			message: 'This subscription is already applied to this vehicle.',
 		};
 	}
-
-	//cancel old subscription:
-	await cancelSubscription(subscriptionId);
-
 	const currentDate = new Date();
+
 	//create new subscription entry with new vehicle Id
 	const newSubscriptionData: NewSubscription = {
 		...currentSubscription,
 		vehicleId,
-		isCancelled: false,
-		cancelledAt: null,
 		updatedAt: currentDate,
 		subscriptionStatus: 'active',
 	};
@@ -109,6 +110,16 @@ export async function transferSubscription(
 		.values(newSubscriptionData)
 		.returning();
 	const newSubscription = newSubscriptionResult[0];
+
+	//Update old subscription to 'transferred'
+	const transferredSubscription = await db.update(subscriptions).set({
+		subscriptionStatus: 'transferred',
+		isTransferred: true,
+		transferredAt: currentDate,
+		transferredSubscriptionId: newSubscription.id,
+		updatedAt: currentDate,
+	});
+
 	revalidatePath('/');
 
 	return {
