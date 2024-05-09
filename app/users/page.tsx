@@ -1,4 +1,4 @@
-import { userColumns } from '@/app/users/userColumns';
+import { userColumns } from './userColumns';
 import { DataTable } from '@/components/ui/data-table';
 import { getAllDetailedUsers } from '@/database/queries';
 
@@ -7,7 +7,7 @@ export default async function UsersListPage() {
 
 	return (
 		<div className='container mx-auto py-10'>
-			<DataTable columns={userColumns} data={users} dataType='user' />
+			<DataTable columns={userColumns} data={users} />
 		</div>
 	);
 }
