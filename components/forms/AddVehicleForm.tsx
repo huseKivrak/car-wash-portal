@@ -19,7 +19,13 @@ import { toast } from '../ui/use-toast';
 import { ToastAction } from '../ui/toast';
 
 type VehicleInputs = z.infer<typeof insertVehicleSchema>;
-export function AddVehicleForm({ userId }: { userId: number }) {
+export function AddVehicleForm({
+	userId,
+	onSuccess,
+}: {
+	userId: number;
+	onSuccess: () => void;
+}) {
 	const form = useForm<VehicleInputs>({
 		resolver: zodResolver(insertVehicleSchema),
 		defaultValues: {
@@ -40,6 +46,7 @@ export function AddVehicleForm({ userId }: { userId: number }) {
 		};
 		const response = await addVehicle(vehicleData);
 		if (response.status === 'success') {
+			onSuccess();
 			toast({
 				variant: 'success',
 				title: 'Vehicle added',
