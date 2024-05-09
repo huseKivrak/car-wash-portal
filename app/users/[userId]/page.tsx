@@ -1,12 +1,5 @@
-import { getAllDetailedUsers, getDetailedUser } from '@/database/queries';
-
-export async function generateStaticParams() {
-	const users = await getAllDetailedUsers();
-
-	return users.map((user) => ({
-		userId: user.id.toString(),
-	}));
-}
+import { getDetailedUserById } from '@/database/queries';
+import { CustomerDashboard } from '@/components/CustomerDashboard';
 
 export default async function UserDetailPage({
 	params,
@@ -15,10 +8,10 @@ export default async function UserDetailPage({
 }) {
 	const { userId } = params;
 
-	const user = await getDetailedUser(parseInt(userId));
+	const user = await getDetailedUserById(parseInt(userId));
 	return (
 		<div className='flex flex-col items-center'>
-			<h1>{user.fullName}</h1>
+			<CustomerDashboard user={user} />
 		</div>
 	);
 }
