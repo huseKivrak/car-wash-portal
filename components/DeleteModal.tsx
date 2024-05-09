@@ -10,7 +10,7 @@ export function DeleteModal({
 	deleteAction,
 	dialogControl,
 }: {
-	id: number;
+	id: string | number;
 	deleteAction: (id: number) => Promise<any> | void;
 	dialogControl: {
 		props: DialogProps;
@@ -18,18 +18,19 @@ export function DeleteModal({
 	};
 }) {
 	const handleSubmit = async () => {
-		const response = await deleteAction(id);
+		const userId = typeof id === 'number' ? id : parseInt(id);
+		const response = await deleteAction(userId);
 		console.log('response:', response);
 		if (response.status === 'success') {
 			toast({
 				variant: 'success',
-				title: 'Vehicle added',
+				title: 'Success!',
 				description: response.message,
 			});
 		} else {
 			toast({
 				variant: 'destructive',
-				title: 'Something went wrong',
+				title: 'Uh oh! Something went wrong',
 				description: (
 					<pre className='mt-2 w-[400px] rounded-md bg-red-700'>
 						<p className='text-white'>{response.message}</p>
@@ -45,9 +46,11 @@ export function DeleteModal({
 			<DialogContent>
 				Are you sure you want to cancel this?
 				<form
-					//@ts-ignore (expects string or FormData. required here SubmitButton)
+					//todo
+					//@ts-ignore
 					action={deleteAction}
 					onSubmit={handleSubmit}
+					className='flex flex-col gap-4'
 				>
 					<SubmitButton variant='destructive' pendingText='Cancelling...'>
 						Confirm
