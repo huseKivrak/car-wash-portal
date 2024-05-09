@@ -1,7 +1,7 @@
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
-import {Table} from '@tanstack/react-table';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { Table } from '@tanstack/react-table';
 
-import {Button} from './button';
+import { Button } from './button';
 import {
 	Select,
 	SelectContent,
@@ -14,7 +14,7 @@ interface DataTablePaginationProps<TData> {
 	table: Table<TData>;
 }
 
-export function Pagination<TData>({table}: DataTablePaginationProps<TData>) {
+export function Pagination<TData>({ table }: DataTablePaginationProps<TData>) {
 	return (
 		<div className='flex items-center justify-between px-2'>
 			<div className='flex-1 text-sm text-muted-foreground'>
