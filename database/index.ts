@@ -1,10 +1,18 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { connectionString } from '@/drizzle.config';
 import * as schema from './schema';
+import { DefaultLogger, LogWriter } from 'drizzle-orm';
+import fs from 'fs';
+import { connectionString } from '@/drizzle.config';
 if (!connectionString) throw new Error('DATABASE_URL not found in .env.local');
 
 const client = postgres(connectionString, {
 	prepare: false,
 });
-export const db = drizzle(client, { schema, logger: true });
+class MyLogWriter implements LogWriter {
+	write(message: string) {
+		fs.writeFileSync('./drizzle.log', message);
+	}
+}
+const logger = new DefaultLogger({ writer: new MyLogWriter() });
+export const db = drizzle(client, { schema, logger });
