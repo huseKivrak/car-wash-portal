@@ -1,4 +1,4 @@
-import { userColumns } from './userColumns';
+import { userColumns } from '../../components/table/userColumns';
 import { DataTable } from '@/components/ui/data-table';
 import { getAllDetailedUsers } from '@/database/queries';
 
