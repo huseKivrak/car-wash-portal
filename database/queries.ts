@@ -1,7 +1,7 @@
 import { DetailedUser } from '@/types/types';
 import { db } from '.';
 import { subscriptions, purchases, washes, vehicles } from './schema';
-import { asc, desc, sql } from 'drizzle-orm';
+import { desc, sql } from 'drizzle-orm';
 
 const preparedAllUsers = db.query.users
 	.findMany({
