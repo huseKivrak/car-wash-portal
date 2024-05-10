@@ -15,15 +15,12 @@ import { NewSubscription, Subscription } from '@/types/types';
  */
 type SubscriptionFields = z.infer<typeof insertSubscriptionSchema>;
 export async function addSubscription(formInputs: SubscriptionFields) {
+	let newSubscription;
 	try {
 		const values = insertSubscriptionSchema.parse(formInputs);
 
 		const result = await db.insert(subscriptions).values(values).returning();
-		const subscription = result[0];
-		return {
-			status: 'success',
-			message: `Subscription ${subscription.id} created`,
-		};
+		newSubscription = result[0];
 	} catch (error) {
 		if (error instanceof ZodError) {
 			console.error('Zod issues:', error.issues);
@@ -41,6 +38,11 @@ export async function addSubscription(formInputs: SubscriptionFields) {
 			};
 		}
 	}
+	revalidatePath('/', 'layout');
+	return {
+		status: 'success',
+		message: `Subscription ${newSubscription.id} created`,
+	};
 }
 
 export async function cancelSubscription(subscriptionId: number) {
@@ -85,6 +87,9 @@ export async function transferSubscription(
 ) {
 	//get current subscription
 	const currentSubscription = await db.query.subscriptions.findFirst({
+		columns: {
+			id: false, //ignore id to prevent duplicates below
+		},
 		where: eq(subscriptions.id, subscriptionId),
 	});
 	if (!currentSubscription) {
@@ -101,8 +106,6 @@ export async function transferSubscription(
 	const newSubscriptionData: NewSubscription = {
 		...currentSubscription,
 		vehicleId,
-		updatedAt: currentDate,
-		subscriptionStatus: 'active',
 	};
 
 	const newSubscriptionResult = await db
@@ -112,13 +115,16 @@ export async function transferSubscription(
 	const newSubscription = newSubscriptionResult[0];
 
 	//Update old subscription to 'transferred'
-	const transferredSubscription = await db.update(subscriptions).set({
-		subscriptionStatus: 'transferred',
-		isTransferred: true,
-		transferredAt: currentDate,
-		transferredSubscriptionId: newSubscription.id,
-		updatedAt: currentDate,
-	});
+	const transferredSubscription = await db
+		.update(subscriptions)
+		.set({
+			subscriptionStatus: 'transferred',
+			isTransferred: true,
+			transferredAt: currentDate,
+			transferredSubscriptionId: newSubscription.id,
+			updatedAt: currentDate,
+		})
+		.returning(); //todo
 
 	revalidatePath('/');
 

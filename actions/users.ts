@@ -9,12 +9,10 @@ import { revalidatePath } from 'next/cache';
 import { User } from '@/types/types';
 
 type InsertUser = z.infer<typeof insertUserSchema>;
-export async function updateUser({
-	fieldsToUpdate,
-}: {
-	fieldsToUpdate: InsertUser;
-}) {
+export async function updateUser(fieldsToUpdate: InsertUser) {
 	const { id, name, phone, email } = insertUserSchema.parse(fieldsToUpdate);
+
+	let updatedUser;
 	try {
 		const updatedRows = await db
 			.update(users)
@@ -22,11 +20,7 @@ export async function updateUser({
 			.where(eq(users.id, id!))
 			.returning();
 
-		const updatedUser = updatedRows[0];
-		return {
-			status: 'success',
-			message: `${updatedUser.name} has been updated.`,
-		};
+		updatedUser = updatedRows[0];
 	} catch (error) {
 		if (error instanceof ZodError) {
 			console.error('Zod issues:', error.issues);
@@ -44,16 +38,26 @@ export async function updateUser({
 			};
 		}
 	}
+	revalidatePath('/', 'layout');
+	return {
+		status: 'success',
+		message: `${updatedUser.name} has been updated.`,
+	};
 }
 
 export async function cancelUser(userId: number) {
-	let cancelledUser: User;
+	let cancelledUser;
+
 	try {
 		const currentDate = new Date();
 
 		const result = await db
 			.update(users)
-			.set({ cancelledAt: currentDate, isCancelled: true })
+			.set({
+				cancelledAt: currentDate,
+				isCancelled: true,
+				updatedAt: currentDate,
+			})
 			.where(eq(users.id, userId))
 			.returning();
 		cancelledUser = result[0];
@@ -69,6 +73,6 @@ export async function cancelUser(userId: number) {
 	revalidatePath('/', 'layout');
 	return {
 		status: 'success',
-		message: `The account of ${cancelledUser.name} has been cancelled.`,
+		message: `${cancelledUser.name}'s account has been cancelled.`,
 	};
 }
