@@ -1,20 +1,12 @@
-import type { Config } from 'drizzle-kit';
-import { cwd } from 'process';
-import { loadEnvConfig } from '@next/env';
+import '@/database/envConfig';
+import {defineConfig} from 'drizzle-kit';
 
-loadEnvConfig(cwd());
-
-
-
-export const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error('DATABASE_URL not found in .env.local');
-
-export default {
+export default defineConfig({
 	schema: './database/schema.ts',
-	driver: 'pg',
 	out: './database/migrations',
+	driver: 'pg',
 	dbCredentials: {
-		connectionString: connectionString,
+		connectionString: process.env.POSTGRES_URL!,
 	},
 	verbose: true,
-} satisfies Config;
+});
