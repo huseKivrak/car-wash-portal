@@ -47,7 +47,6 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 				return title.toLowerCase().includes(filterValue.toLowerCase());
 			});
 		},
-		enableGlobalFilter: true,
 	},
 	{
 		accessorKey: 'user',
@@ -109,6 +108,7 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 				statusOrder[rowB.getValue(columnId) as keyof typeof statusOrder];
 			return valueA - valueB;
 		},
+		meta: 'subStatus',
 	},
 	{
 		id: 'actions',

@@ -71,7 +71,7 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 	{
 		accessorKey: 'subscriptions',
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title='Subscription Status' />
+			<DataTableColumnHeader column={column} title='Subscriptions' />
 		),
 		cell: ({ row }) => {
 			const subscriptions = row.getValue(
@@ -99,12 +99,15 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 			);
 		},
 		filterFn: (row, columnId, filterValue) => {
-			const vehicles: Vehicle[] = row.getValue(columnId);
-			return vehicles.some((vehicle) => {
-				const title = makeVehicleTitle(vehicle);
-				return title.toLowerCase().includes(filterValue.toLowerCase());
-			});
+			const subscriptions: DetailedSubscription[] = row.getValue(columnId);
+			return subscriptions.some((subscription) =>
+				subscription.subscriptionStatus
+					.toLowerCase()
+					.includes(filterValue.toLowerCase())
+			);
 		},
+		meta: 'subStatus',
+		enableSorting: false,
 	},
 
 	{

@@ -13,6 +13,7 @@ import {
 	useReactTable,
 	FilterFn,
 	Column,
+	RowData,
 } from '@tanstack/react-table';
 
 import {
@@ -25,6 +26,14 @@ import {
 } from '@/components/ui/table';
 
 import { Pagination } from './pagination';
+import { Input } from './input';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from './select';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -39,19 +48,19 @@ export function DataTable<TData, TValue>({
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [globalFilter, setGlobalFilter] = useState<string>('');
 
-	const globalFilterFn: FilterFn<any> = (
-		row,
-		columnId,
-		filterValue: string
-	) => {
-		console.log('ROW COLUMN FILTERS:', row.columnFilters);
-		console.log('ROW COLUMN FILTERS @:', row.columnFiltersMeta);
-		const search = filterValue.toLowerCase();
-		let value = row.getValue(columnId) as string;
-		if (typeof value === 'number') value = String(value);
+	// const globalFilterFn: FilterFn<any> = (
+	// 	row,
+	// 	columnId,
+	// 	filterValue: string
+	// ) => {
+	// 	console.log('ROW COLUMN FILTERS:', row.columnFilters);
+	// 	console.log('ROW COLUMN FILTERS @:', row.columnFiltersMeta);
+	// 	const search = filterValue.toLowerCase();
+	// 	let value = row.getValue(columnId) as string;
+	// 	if (typeof value === 'number') value = String(value);
 
-		return value?.toLowerCase().includes(search);
-	};
+	// 	return value?.toLowerCase().includes(search);
+	// };
 
 	const table = useReactTable({
 		data,
@@ -64,11 +73,10 @@ export function DataTable<TData, TValue>({
 		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
 		onGlobalFilterChange: setGlobalFilter,
-		globalFilterFn: globalFilterFn,
+
 		state: {
 			sorting,
 			columnFilters,
-			globalFilter,
 		},
 	});
 	return (
@@ -128,8 +136,24 @@ export function DataTable<TData, TValue>({
 
 function Filter({ column }: { column: Column<any, unknown> }) {
 	const columnFilterValue = column.getFilterValue();
-
-	return (
+	const meta = column.columnDef.meta;
+	const isSubscriptionStatus = meta === 'subStatus';
+	return isSubscriptionStatus ? (
+		<Select
+			onValueChange={(val) => column.setFilterValue(val)}
+			value={columnFilterValue?.toString()}
+		>
+			<SelectTrigger className='w-[180px]'>
+				<SelectValue placeholder='Select status type' />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value='active'>Active</SelectItem>
+				<SelectItem value='transferred'>Transferred</SelectItem>
+				<SelectItem value='overdue'>Overdue</SelectItem>
+				<SelectItem value='cancelled'> Cancelled</SelectItem>
+			</SelectContent>
+		</Select>
+	) : (
 		<DebouncedInput
 			type='text'
 			value={(columnFilterValue ?? '') as string}
@@ -166,7 +190,7 @@ function DebouncedInput({
 	}, [value]);
 
 	return (
-		<input
+		<Input
 			{...props}
 			value={value}
 			onChange={(e) => setValue(e.target.value)}
