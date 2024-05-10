@@ -12,7 +12,6 @@ import {
 	getSortedRowModel,
 	useReactTable,
 	FilterFn,
-	Row,
 	Column,
 } from '@tanstack/react-table';
 
@@ -30,8 +29,6 @@ import { Pagination } from './pagination';
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	filterColumn: string;
-	showPagination: boolean;
 }
 
 export function DataTable<TData, TValue>({
