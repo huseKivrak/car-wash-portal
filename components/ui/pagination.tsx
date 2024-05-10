@@ -1,4 +1,9 @@
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import {
+	ArrowBigLeftDash,
+	ArrowBigRightDash,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+} from 'lucide-react';
 import { Table } from '@tanstack/react-table';
 
 import { Button } from './button';
@@ -54,7 +59,7 @@ export function Pagination<TData>({ table }: DataTablePaginationProps<TData>) {
 						disabled={!table.getCanPreviousPage()}
 					>
 						<span className='sr-only'>Go to first page</span>
-						<ChevronLeftIcon className='h-4 w-4' />
+						<ArrowBigLeftDash className='h-4 w-4' />
 					</Button>
 					<Button
 						variant='outline'
@@ -81,7 +86,7 @@ export function Pagination<TData>({ table }: DataTablePaginationProps<TData>) {
 						disabled={!table.getCanNextPage()}
 					>
 						<span className='sr-only'>Go to last page</span>
-						<ChevronRightIcon className='h-4 w-4' />
+						<ArrowBigRightDash className='h-4 w-4' />
 					</Button>
 				</div>
 			</div>
