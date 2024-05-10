@@ -16,7 +16,7 @@ export const users = pgTable(
 	{
 		id: serial('id').primaryKey(),
 		name: text('name').notNull(),
-		phone: text('phone'),
+		phone: text('phone').notNull(),
 		email: text('email').notNull().unique(),
 		role: text('role').notNull().default('user'),
 		isStaff: boolean('is_staff').default(false),
