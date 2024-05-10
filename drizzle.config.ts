@@ -1,4 +1,4 @@
-import '@/database/envConfig';
+import '@/database/envConfig.ts';
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
