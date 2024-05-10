@@ -11,9 +11,7 @@ import {
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
-	FilterFn,
 	Column,
-	RowData,
 } from '@tanstack/react-table';
 
 import {
@@ -25,15 +23,15 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 
-import { Pagination } from './pagination';
-import { Input } from './input';
+import { Pagination } from '../ui/pagination';
+import { Input } from '../ui/input';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from './select';
+} from '../ui/select';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -137,20 +135,33 @@ export function DataTable<TData, TValue>({
 function Filter({ column }: { column: Column<any, unknown> }) {
 	const columnFilterValue = column.getFilterValue();
 	const meta = column.columnDef.meta;
-	const isSubscriptionStatus = meta === 'status';
-	return isSubscriptionStatus ? (
+
+	return meta === 'status' ? (
 		<Select
 			onValueChange={(val) => column.setFilterValue(val)}
 			value={columnFilterValue?.toString()}
 		>
-			<SelectTrigger className='w-[180px]'>
-				<SelectValue placeholder='Select status type' />
+			<SelectTrigger className='w-[180px] '>
+				<SelectValue placeholder='Select status' />
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value='active'>Active</SelectItem>
 				<SelectItem value='transferred'>Transferred</SelectItem>
 				<SelectItem value='overdue'>Overdue</SelectItem>
 				<SelectItem value='cancelled'> Cancelled</SelectItem>
+			</SelectContent>
+		</Select>
+	) : meta === 'item' ? (
+		<Select
+			onValueChange={(val) => column.setFilterValue(val)}
+			value={columnFilterValue?.toString()}
+		>
+			<SelectTrigger className='w-[120px]'>
+				<SelectValue placeholder='Select type' />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value='subscription'>Subscription</SelectItem>
+				<SelectItem value='wash'>Wash</SelectItem>
 			</SelectContent>
 		</Select>
 	) : (
