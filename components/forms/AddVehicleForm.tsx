@@ -24,7 +24,7 @@ export function AddVehicleForm({
 	onSuccess,
 }: {
 	userId: number;
-	onSuccess: () => void;
+	onSuccess: (vehicleId?: number) => void;
 }) {
 	const form = useForm<VehicleInputs>({
 		resolver: zodResolver(insertVehicleSchema),
@@ -46,7 +46,8 @@ export function AddVehicleForm({
 		};
 		const response = await addVehicle(vehicleData);
 		if (response.status === 'success') {
-			onSuccess();
+			const vehicleId = response.data;
+			onSuccess(vehicleId);
 			toast({
 				variant: 'success',
 				title: 'Vehicle added',

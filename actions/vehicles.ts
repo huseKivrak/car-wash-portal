@@ -8,12 +8,12 @@ import { revalidatePath } from 'next/cache';
 
 type VehicleInputs = z.infer<typeof insertVehicleSchema>;
 export async function addVehicle(formInputs: VehicleInputs) {
-	let vehicleTitle;
+	let newVehicle;
 	try {
 		const values = insertVehicleSchema.parse(formInputs);
 
 		const result = await db.insert(vehicles).values(values).returning();
-		vehicleTitle = makeVehicleTitle(result[0]);
+		newVehicle = result[0];
 	} catch (error) {
 		if (error instanceof ZodError) {
 			console.error('Zod issues:', error.issues);
@@ -33,8 +33,12 @@ export async function addVehicle(formInputs: VehicleInputs) {
 	}
 
 	revalidatePath('/');
+	const vehicleTitle = makeVehicleTitle(newVehicle);
 	return {
 		status: 'success',
 		message: `${vehicleTitle} created.`,
+		data: newVehicle.id,
 	};
 }
+
+
