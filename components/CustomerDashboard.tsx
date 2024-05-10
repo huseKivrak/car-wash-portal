@@ -11,13 +11,16 @@ import { purchaseColumns } from './table/purchaseColumns';
 
 export function CustomerDashboard({ user }: { user: DetailedUser }) {
 	return (
-		<div className='flex flex-row '>
-			<div className='w-1/5 pr-8'>
+		<div className='flex flex-row space-x-8'>
+			<div className=''>
 				<UserOverview user={user} />
 			</div>
-			<div className='w-3/4'>
-				<Tabs defaultValue='subscriptions' className='w-full'>
-					<TabsList className='grid w-full grid-cols-2'>
+			<div>
+				<Tabs
+					defaultValue='subscriptions'
+					className='w-full border rounded-lg border-primary'
+				>
+					<TabsList className='grid w-full grid-cols-2 border rounded-lg border-primary'>
 						<TabsTrigger value='subscriptions'>Subscriptions</TabsTrigger>
 						<TabsTrigger value='purchases'>Purchases</TabsTrigger>
 					</TabsList>

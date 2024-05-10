@@ -27,9 +27,8 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 	const editDialog = useDialog();
 	const transferSubscriptionDialog = useDialog();
 	return (
-		<Card className='max-w-xl'>
+		<Card>
 			<CardHeader className='flex flex-col items-center justify-between pb-1'>
-				<div className='text-xl text-secondary-foreground'>Shortcuts</div>
 				<CardTitle className='text-lg'>{user.name}</CardTitle>
 			</CardHeader>
 			<div className='pl-6 text-stone-400 space-y-1 '>
@@ -40,7 +39,10 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 					</Link>
 				</div>
 				<div className='hover:underline'>
-					<Link href={`mailto:${user.email}`} className='flex items-center'>
+					<Link
+						href={`mailto:${user.email}`}
+						className='flex items-center text-sm'
+					>
 						{user.email}
 						<Mail className='w-3 h-3 ml-2' />
 					</Link>
@@ -55,7 +57,7 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 						size='sm'
 						variant='outline'
 						onClick={editDialog.trigger}
-						className='w-fit'
+						className='bg-secondary text-secondary-foreground'
 					>
 						<UserX className='mr-2 h-4 w-4' />
 						Edit account
@@ -64,7 +66,7 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 						size='sm'
 						variant='secondary'
 						onClick={transferSubscriptionDialog.trigger}
-						className='w-fit'
+						className='bg-primary text-primary-foreground'
 					>
 						<ArrowRightLeft className='mr-2 h-4 w-4' />
 						Transfer Sub
@@ -73,7 +75,7 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 						size='sm'
 						variant='destructive'
 						onClick={cancelDialog.trigger}
-						className='w-fit'
+						className='text-destructive-foreground'
 					>
 						<UserX className='mr-2 h-4 w-4' />
 						Cancel account
