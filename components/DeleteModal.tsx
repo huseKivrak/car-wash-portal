@@ -58,13 +58,9 @@ export function DeleteModal({
 				</div>
 				<div className='flex items-center justify-evenly space-x-2'>
 					<form onSubmit={handleSubmit}>
-						<SubmitButton
-							variant='destructive'
-							pendingText='Cancelling...'
-							size='lg'
-						>
+						<Button variant='destructive' size='lg'>
 							Confirm
-						</SubmitButton>
+						</Button>
 					</form>
 					<DialogFooter>
 						<DialogClose asChild>

@@ -4,11 +4,9 @@ import { loadEnvConfig } from '@next/env';
 
 loadEnvConfig(cwd());
 
-const useLocalDb = process.env.USE_LOCAL_DB === 'true';
 
-export const connectionString = useLocalDb
-	? process.env.LOCAL_DB
-	: process.env.DATABASE_URL;
+
+export const connectionString = process.env.DATABASE_URL;
 if (!connectionString) throw new Error('DATABASE_URL not found in .env.local');
 
 export default {
