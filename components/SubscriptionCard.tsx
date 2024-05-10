@@ -20,11 +20,10 @@ export function SubscriptionCard({
 	const { subscriptionStatus, startDate, endDate, vehicle, washes, purchases } =
 		subscription;
 	const vehicleTitle = makeVehicleTitle(vehicle);
-
 	const color = getStatusColor(subscriptionStatus);
 
 	return (
-		<Card>
+		<Card className='w-[350px]'>
 			<CardHeader className='flex space-y-1 pb-1'>
 				<CardTitle className='flex justify-between'>
 					<div className='text-sm'>{vehicleTitle}</div>
@@ -41,7 +40,7 @@ export function SubscriptionCard({
 					<div className='flex items-center'>
 						<p className='font-medium'>Last Wash:</p>
 						<p className='ml-2 font-medium text-sm'>
-							{formatDateTime(washes[0].createdAt)}
+							{formatDateTime(washes[0]?.createdAt)}
 						</p>
 					</div>
 					<p>Expires: {endDate ? formatDateTime(endDate, false) : 'n/a'}</p>
@@ -51,7 +50,7 @@ export function SubscriptionCard({
 			<CardContent className='flex flex-col text-sm'>
 				<div>
 					<h4>All washes:</h4>
-					<ul className='list-disc list-inside text-green-300 '>
+					<ul className='list-disc list-inside text-green-700 '>
 						{washes.map((w) => (
 							<li key={w.id} className='px-2 py-0 font-mono text-xs'>
 								{formatDateTime(w.createdAt)}
