@@ -18,29 +18,50 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { updateUser } from '@/actions/users';
 
 type UserInputs = z.infer<typeof insertUserSchema>;
 
-export function UserForm({ user }: { user?: DetailedUser }) {
+export function UserForm({
+	user,
+	onSuccess,
+}: {
+	user: DetailedUser;
+	onSuccess: () => void;
+}) {
 	const form = useForm<UserInputs>({
 		resolver: zodResolver(insertUserSchema),
 		defaultValues: {
-			name: user?.name || '',
-			email: user?.email || '',
-			phone: user?.phone || '',
+			name: user.name,
+			email: user.email,
+			phone: user.phone,
 		},
 	});
 
-	function onSubmit(values: UserInputs) {
-		console.log(values);
-		toast({
-			title: 'Submitted values:',
-			description: (
-				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-					<code className='text-white'>{JSON.stringify(values, null, 2)}</code>
-				</pre>
-			),
-		});
+	async function onSubmit(values: UserInputs) {
+		const updateData = {
+			id: user?.id,
+			...values,
+		};
+		const response = await updateUser(updateData);
+		if (response.status === 'success') {
+			toast({
+				variant: 'success',
+				title: 'Success!',
+				description: response.message,
+			});
+			onSuccess();
+		} else {
+			toast({
+				variant: 'destructive',
+				title: 'Uh oh! Something went wrong',
+				description: (
+					<pre className='mt-2 w-[400px] rounded-md bg-red-700'>
+						<p className='text-white'>{response.message}</p>
+					</pre>
+				),
+			});
+		}
 	}
 
 	return (
@@ -53,11 +74,7 @@ export function UserForm({ user }: { user?: DetailedUser }) {
 						<FormItem>
 							<FormLabel>Name</FormLabel>
 							<FormControl>
-								<Input
-									placeholder='John Doe'
-									{...field}
-									value={field.value || ''}
-								/>
+								<Input placeholder='John Doe' {...field} value={field.value} />
 							</FormControl>
 							<FormDescription>Edit customer's name.</FormDescription>
 							<FormMessage />
@@ -74,7 +91,7 @@ export function UserForm({ user }: { user?: DetailedUser }) {
 								<Input
 									placeholder='john@doe.com'
 									{...field}
-									value={field.value || ''}
+									value={field.value}
 								/>
 							</FormControl>
 							<FormDescription>Edit customer's email.</FormDescription>
@@ -92,7 +109,7 @@ export function UserForm({ user }: { user?: DetailedUser }) {
 								<Input
 									placeholder='123-456-7890'
 									{...field}
-									value={field.value || ''}
+									value={field.value}
 								/>
 							</FormControl>
 							<FormDescription>Edit customer's phone.</FormDescription>
