@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowUpIcon, ArrowUpDown, EyeOff } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, ArrowUpDown } from 'lucide-react';
 import { Column } from '@tanstack/react-table';
 
 import { cn } from '@/lib/utils';
