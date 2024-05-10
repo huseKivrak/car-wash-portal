@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Quicksand } from 'next/font/google';
 
 import { cn } from '@/lib/utils';
 import './globals.css';
@@ -8,7 +8,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Sidebar } from '@/components/layout/Sidebar';
 
-const inter = Inter({ subsets: ['latin'] });
+const quicksand = Quicksand({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
 	title: 'CSR Portal',
@@ -25,7 +25,7 @@ export default function RootLayout({
 			<body
 				className={cn(
 					'min-h-screen bg-background font-sans antialiased',
-					inter.className
+					quicksand.className
 				)}
 			>
 				<ThemeProvider
