@@ -32,7 +32,8 @@ export function AddVehicleForm({
 			licensePlate: '',
 			make: '',
 			model: '',
-			year: 0,
+			//@ts-ignore - fixes placeholder bug
+			year: '',
 			color: '',
 			userId: userId,
 		},
@@ -70,6 +71,10 @@ export function AddVehicleForm({
 
 	return (
 		<Form {...form}>
+			<h1 className='text-3xl font-semibold'>Add a new vehicle</h1>
+			<p className='text-lg text-stone-600 dark:text-stone-300'>
+				Please ensure all details are correct before submitting.
+			</p>
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
 				<FormField
 					control={form.control}
@@ -122,7 +127,7 @@ export function AddVehicleForm({
 							<FormControl>
 								<Input
 									type='number'
-									placeholder='2022'
+									placeholder='2024'
 									onBlur={onBlur}
 									onChange={(e) => onChange(parseInt(e.target.value, 10) || '')}
 									value={value}
