@@ -6,14 +6,19 @@ import { Badge, badgeVariants } from '@/components/ui/badge';
 import { getStatusColor } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { ExternalLink } from 'lucide-react';
+import { DataTableColumnHeader } from '@/components/table/DataTableColumnHeader';
 export const purchaseColumns: ColumnDef<Purchase>[] = [
 	{
 		accessorKey: 'id',
-		header: 'ID',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Id' />
+		),
 	},
 	{
 		accessorKey: 'itemType',
-		header: 'TYPE',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Type' />
+		),
 		cell: ({ row }) => {
 			const { itemType, subscriptionId, washId } = row.original;
 			const itemId = subscriptionId || washId;
@@ -35,7 +40,9 @@ export const purchaseColumns: ColumnDef<Purchase>[] = [
 	},
 	{
 		accessorKey: 'paymentStatus',
-		header: 'STATUS',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Payment Status' />
+		),
 		cell: ({ row }) => {
 			const { paymentStatus, paidOn } = row.original;
 			const statusColor = getStatusColor(paymentStatus);
