@@ -176,7 +176,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 }
 
 // A typical debounced input react component
-function DebouncedInput({
+export function DebouncedInput({
 	value: initialValue,
 	onChange,
 	debounce = 500,
