@@ -57,12 +57,7 @@ export function DeleteModal({
 					</p>
 				</div>
 				<div className='flex items-center justify-evenly space-x-2'>
-					<form
-						//todo
-						//@ts-ignore
-						action={deleteAction}
-						onSubmit={handleSubmit}
-					>
+					<form onSubmit={handleSubmit}>
 						<SubmitButton
 							variant='destructive'
 							pendingText='Cancelling...'

@@ -76,7 +76,7 @@ export function UserForm({
 							<FormControl>
 								<Input placeholder='John Doe' {...field} value={field.value} />
 							</FormControl>
-							<FormDescription>Edit customer's name.</FormDescription>
+							<FormDescription>Edit customer&apos;s name.</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -94,7 +94,7 @@ export function UserForm({
 									value={field.value}
 								/>
 							</FormControl>
-							<FormDescription>Edit customer's email.</FormDescription>
+							<FormDescription>Edit customer&apos;s email.</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}
@@ -112,7 +112,7 @@ export function UserForm({
 									value={field.value}
 								/>
 							</FormControl>
-							<FormDescription>Edit customer's phone.</FormDescription>
+							<FormDescription>Edit customer&apos;s phone.</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}

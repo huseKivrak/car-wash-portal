@@ -27,6 +27,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { DeleteModal } from '@/components/DeleteModal';
 import { cancelSubscription } from '@/actions/subscriptions';
 import { DataTableColumnHeader } from '@/components/table/DataTableColumnHeader';
+import { SubscriptionActionsMenu } from './ActionMenus';
 
 export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 	{
@@ -113,48 +114,7 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 	{
 		id: 'actions',
 		cell: ({ row }) => {
-			const sub = row.original;
-			const deleteDialog = useDialog();
-			const editDialog = useDialog();
-
-			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant='outline' className='h-8 w-8 p-0'>
-							<span className='sr-only'>Open menu</span>
-							<MoreHorizontal className='h-4 w-4' />
-						</Button>
-					</DropdownMenuTrigger>
-
-					<DropdownMenuContent align='end'>
-						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuGroup>
-							<DropdownMenuItem onSelect={editDialog.trigger}>
-								<LucideEdit className='mr-1 h-4 w-4' />
-								<span>Edit</span>
-							</DropdownMenuItem>
-							<DropdownMenuItem onSelect={deleteDialog.trigger}>
-								<FolderX className='mr-1 h-4 w-4' />
-								<span>Delete</span>
-							</DropdownMenuItem>
-						</DropdownMenuGroup>
-					</DropdownMenuContent>
-
-					<Dialog {...editDialog.props}>
-						<DialogContent>
-							Edit Subscription Form Here
-							<DialogClose asChild>
-								<Button>Close</Button>
-							</DialogClose>
-						</DialogContent>
-					</Dialog>
-					<DeleteModal
-						id={sub.id}
-						deleteAction={cancelSubscription}
-						dialogControl={deleteDialog}
-					/>
-				</DropdownMenu>
-			);
+			return <SubscriptionActionsMenu subscription={row.original} />;
 		},
 	},
 ];
