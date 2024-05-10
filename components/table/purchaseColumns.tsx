@@ -52,5 +52,10 @@ export const purchaseColumns: ColumnDef<Purchase>[] = [
 				</Badge>
 			);
 		},
+		filterFn: (row, columnId, filterValue) => {
+			const paymentStatus: string = row.getValue(columnId);
+			return paymentStatus.toLowerCase().includes(filterValue.toLowerCase());
+		},
+		meta: 'status',
 	},
 ];

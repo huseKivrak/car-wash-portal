@@ -108,7 +108,7 @@ export const subscriptionColumns: ColumnDef<DetailedSubscription>[] = [
 				statusOrder[rowB.getValue(columnId) as keyof typeof statusOrder];
 			return valueA - valueB;
 		},
-		meta: 'subStatus',
+		meta: 'status',
 	},
 	{
 		id: 'actions',

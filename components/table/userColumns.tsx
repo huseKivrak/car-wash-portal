@@ -27,7 +27,7 @@ import Link from 'next/link';
 import { DropdownMenuGroup } from '@radix-ui/react-dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionCard } from '@/components/SubscriptionCard';
-import { getStatusColor, makeVehicleTitle } from '@/lib/utils';
+import { getStatusColor } from '@/lib/utils';
 import { DeleteModal } from '@/components/DeleteModal';
 import { cancelUser } from '@/actions/users';
 import { useDialog } from '@/components/ui/use-dialog';
@@ -106,7 +106,7 @@ export const userColumns: ColumnDef<DetailedUser>[] = [
 					.includes(filterValue.toLowerCase())
 			);
 		},
-		meta: 'subStatus',
+		meta: 'status',
 		enableSorting: false,
 	},
 

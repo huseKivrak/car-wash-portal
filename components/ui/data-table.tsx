@@ -137,7 +137,7 @@ export function DataTable<TData, TValue>({
 function Filter({ column }: { column: Column<any, unknown> }) {
 	const columnFilterValue = column.getFilterValue();
 	const meta = column.columnDef.meta;
-	const isSubscriptionStatus = meta === 'subStatus';
+	const isSubscriptionStatus = meta === 'status';
 	return isSubscriptionStatus ? (
 		<Select
 			onValueChange={(val) => column.setFilterValue(val)}
