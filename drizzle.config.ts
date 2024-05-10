@@ -1,12 +1,16 @@
-import '@/database/envConfig';
-import { defineConfig } from 'drizzle-kit';
+import type { Config } from 'drizzle-kit';
+import { cwd } from 'process';
+import { loadEnvConfig } from '@next/env';
 
-export default defineConfig({
+loadEnvConfig(cwd());
+export const connectionString = process.env.DATABASE_URL;
+
+export default {
 	schema: './database/schema.ts',
-	out: './database/migrations',
 	driver: 'pg',
+	out: './database/migrations',
 	dbCredentials: {
-		connectionString: process.env.POSTGRES_URL!,
+		connectionString: connectionString!,
 	},
 	verbose: true,
-});
+} satisfies Config;
