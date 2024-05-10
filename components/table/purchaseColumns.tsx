@@ -17,26 +17,18 @@ export const purchaseColumns: ColumnDef<Purchase>[] = [
 	{
 		accessorKey: 'itemType',
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title='Type' />
+			<DataTableColumnHeader column={column} title='Item Type' />
 		),
 		cell: ({ row }) => {
 			const { itemType, subscriptionId, washId } = row.original;
 			const itemId = subscriptionId || washId;
-			return (
-				<div>
-					<Link
-						href={`/${itemType}/${itemId}`}
-						className={cn(
-							badgeVariants({ variant: 'outline' }),
-							'p-2 hover:underline bg-stone-500'
-						)}
-					>
-						{itemType.toUpperCase()}
-						<ExternalLink className='w-4' />
-					</Link>
-				</div>
-			);
+			return <div className='flex items-center'>{itemType.toUpperCase()}</div>;
 		},
+		filterFn: (row, columnId, filterValue) => {
+			const itemType: string = row.getValue(columnId);
+			return itemType.toLowerCase().includes(filterValue.toLowerCase());
+		},
+		meta: 'item',
 	},
 	{
 		accessorKey: 'paymentStatus',
@@ -44,7 +36,7 @@ export const purchaseColumns: ColumnDef<Purchase>[] = [
 			<DataTableColumnHeader column={column} title='Payment Status' />
 		),
 		cell: ({ row }) => {
-			const { paymentStatus, paidOn } = row.original;
+			const { paymentStatus } = row.original;
 			const statusColor = getStatusColor(paymentStatus);
 			return (
 				<Badge variant='outline' style={{ backgroundColor: statusColor }}>
