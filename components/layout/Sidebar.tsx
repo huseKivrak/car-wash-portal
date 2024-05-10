@@ -3,8 +3,11 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { ChevronsRight } from 'lucide-react';
 import { navLinks } from '@/config/navLinks';
+import { UsersAutocomplete } from '../UsersAutocomplete';
+import { getAllDetailedUsers } from '@/database/queries';
 
-export function Sidebar() {
+export async function Sidebar() {
+	const users = await getAllDetailedUsers();
 	return (
 		<Sheet>
 			<SheetTrigger asChild className='fixed top-1/2 ml-2'>
@@ -25,6 +28,7 @@ export function Sidebar() {
 						</Link>
 					))}
 				</nav>
+				<UsersAutocomplete users={users} />
 			</SheetContent>
 		</Sheet>
 	);

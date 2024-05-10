@@ -34,7 +34,9 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Navbar />
+					<div className='flex justify-end p-4'>
+						<Navbar />
+					</div>
 					<main className='container mx-auto max-w-7xl pt-8 flex-grow'>
 						{children}
 					</main>

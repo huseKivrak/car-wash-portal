@@ -28,7 +28,8 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 	const transferSubscriptionDialog = useDialog();
 	return (
 		<Card className='max-w-xl'>
-			<CardHeader className='flex flex-row items-center justify-between pb-1'>
+			<CardHeader className='flex flex-col items-center justify-between pb-1'>
+				<div className='text-xl text-secondary-foreground'>Shortcuts</div>
 				<CardTitle className='text-lg'>{user.name}</CardTitle>
 			</CardHeader>
 			<div className='pl-6 text-stone-400 space-y-1 '>
@@ -78,8 +79,6 @@ export function UserOverview({ user }: { user: DetailedUser }) {
 						Cancel account
 					</Button>
 				</div>
-
-				<Separator className='my-2' />
 
 				<Dialog {...transferSubscriptionDialog.props}>
 					<DialogContent>

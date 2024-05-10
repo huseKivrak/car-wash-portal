@@ -9,6 +9,9 @@ export default async function UserDetailPage({
 	const { userId } = params;
 
 	const user = await getDetailedUserById(parseInt(userId));
+	if (!user) {
+		return <div>Loading...</div>;
+	}
 	return (
 		<div className='flex flex-col items-center'>
 			<CustomerDashboard user={user} />

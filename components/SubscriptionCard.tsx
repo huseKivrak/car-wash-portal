@@ -28,7 +28,7 @@ export function SubscriptionCard({
 				<CardTitle className='flex justify-between'>
 					<div className='text-sm'>{vehicleTitle}</div>
 					<Badge variant='outline' style={{ backgroundColor: color }}>
-						<div className='text-muted-foreground'>
+						<div className='text-foreground'>
 							{subscriptionStatus.toUpperCase()}
 						</div>
 					</Badge>

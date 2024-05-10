@@ -7,8 +7,4 @@ export const navLinks = [
 		label: 'Subscriptions',
 		href: '/subscriptions',
 	},
-	{
-		label: 'Purchases',
-		href: '/purchases',
-	},
 ];

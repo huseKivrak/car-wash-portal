@@ -7,7 +7,7 @@ import { connectionString } from '@/drizzle.config';
 if (!connectionString) throw new Error('DATABASE_URL not found in .env.local');
 
 const client = postgres(connectionString, {
-
+	prepare: false,
 });
 class MyLogWriter implements LogWriter {
 	write(message: string) {
