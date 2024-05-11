@@ -1,49 +1,36 @@
-import type { Metadata } from 'next';
-import { Quicksand } from 'next/font/google';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
+import { Sidenav } from "@/components/layout/Sidenav";
+import { cn } from "@/lib/utils";
 
-import { cn } from '@/lib/utils';
-import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
-import { Navbar } from '@/components/layout/Navbar';
-import { ThemeProvider } from '@/components/theme-provider';
-import { Sidebar } from '@/components/layout/Sidebar';
-
-const quicksand = Quicksand({ subsets: ['latin'] });
+const poppins = Poppins({ subsets: ["latin"], weight: ["400"] });
 
 export const metadata: Metadata = {
-	title: 'CSR Portal',
-	description: 'AMP Portal for Customer Service Representatives',
+  title: "CSR Portal",
+  description: "AMP Portal for Customer Service Representatives",
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang='en'>
-			<body
-				className={cn(
-					'min-h-screen bg-background font-sans antialiased',
-					quicksand.className
-				)}
-			>
-				<ThemeProvider
-					attribute='class'
-					defaultTheme='system'
-					enableSystem
-					disableTransitionOnChange
-				>
-					<div className='flex justify-end p-4'>
-						<Navbar />
-					</div>
-					<main className='container mx-auto max-w-7xl pt-8 flex-grow'>
-						{children}
-					</main>
-					<Sidebar />
-					<Toaster />
-				</ThemeProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body
+        className={cn(
+          "bg-background text-foreground antialiased ",
+          poppins.className,
+        )}
+      >
+        <Sidenav />
+        <main className="flex min-h-screen max-w-7xl flex-col px-8 pt-16 sm:ml-[200px] md:ml-[300px]">
+          {children}
+        </main>
+        <Toaster />
+      </body>
+    </html>
+  );
 }
