@@ -24,7 +24,11 @@ export function UsersAutocomplete({ users }: { users: DetailedUser[] }) {
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'Enter' && event.shiftKey && value) {
+			if (
+				event.key === 'Enter' &&
+				// && event.shiftKey
+				value
+			) {
 				router.push(`/users/${value.value}`);
 			}
 		};
