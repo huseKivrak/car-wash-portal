@@ -44,3 +44,8 @@ export function formatDateTime(date: Date, includeTime: boolean = true) {
 	const dateTimeFormatter = new Intl.DateTimeFormat('en-US', options);
 	return dateTimeFormatter.format(date);
 };
+
+export function capitalize(str: string) {
+	return `${str.charAt(0).toUpperCase()}${str.slice(1)}`;
+}
+
