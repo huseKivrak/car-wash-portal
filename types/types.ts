@@ -1,16 +1,16 @@
-import { z } from 'zod';
+import { z } from "zod";
 import {
-	selectUserSchema,
-	insertUserSchema,
-	selectVehicleSchema,
-	insertVehicleSchema,
-	selectSubscriptionSchema,
-	insertSubscriptionSchema,
-	selectWashSchema,
-	insertWashSchema,
-	selectPurchaseSchema,
-	insertPurchaseSchema,
-} from '@/database/schema';
+  selectUserSchema,
+  insertUserSchema,
+  selectVehicleSchema,
+  insertVehicleSchema,
+  selectSubscriptionSchema,
+  insertSubscriptionSchema,
+  selectWashSchema,
+  insertWashSchema,
+  selectPurchaseSchema,
+  insertPurchaseSchema,
+} from "@/database/schema";
 
 export type User = z.infer<typeof selectUserSchema>;
 export type NewUser = z.infer<typeof insertUserSchema>;
@@ -28,20 +28,20 @@ export type Purchase = z.infer<typeof selectPurchaseSchema>;
 export type NewPurchase = z.infer<typeof insertPurchaseSchema>;
 
 export interface DetailedSubscription extends Subscription {
-	user: User;
-	vehicle: Vehicle;
-	washes: Wash[];
-	purchases: Purchase[];
+  user: User;
+  vehicle: Vehicle;
+  washes: Wash[];
+  purchases: Purchase[];
 }
 
 export interface DetailedUser extends User {
-	vehicles: Vehicle[];
-	subscriptions: DetailedSubscription[];
-	washes: Wash[];
-	purchases: Purchase[];
+  vehicles: Vehicle[];
+  subscriptions: DetailedSubscription[];
+  washes: Wash[];
+  purchases: Purchase[];
 }
 
 export type NavLink = {
-	label: string;
-	href: string;
+  label: string;
+  href: string;
 };
