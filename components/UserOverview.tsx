@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -34,32 +35,39 @@ export function UserOverview({
   const editDialog = useDialog();
   const transferSubscriptionDialog = useDialog();
   return (
-    <Card className="space-y-4 rounded-3xl border-2 px-4">
-      <CardHeader className="flex flex-row pb-1">
-        <CardTitle className=" text-lg tracking-wider">{user.name}</CardTitle>
+    <Card className="space-y-4 rounded-xl border-2">
+      <CardHeader className="flex flex-row items-start bg-muted/50 ">
+        <div className="grid gap-0.5">
+          <CardTitle className="text-lg tracking-wider">{user.name}</CardTitle>
+          <CardDescription className="mt-0 tracking-tight">
+            <div className="space-y-1 text-stone-400 ">
+              <div className="hover:underline">
+                <Link href={`tel:${user.phone}`} className="flex items-center">
+                  {user.phone}
+                  <LucidePhone className="ml-2 h-3 w-3" />
+                </Link>
+              </div>
+              <div className="hover:underline">
+                <Link
+                  href={`mailto:${user.email}`}
+                  className="flex items-center text-sm"
+                >
+                  {user.email}
+                  <Mail className="ml-2 h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+          </CardDescription>
+        </div>
         <UserActionsMenu user={user} />
       </CardHeader>
-      <div className="space-y-1 pl-6 text-stone-400 ">
-        <div className="hover:underline">
-          <Link href={`tel:${user.phone}`} className="flex items-center">
-            {user.phone}
-            <LucidePhone className="ml-2 h-3 w-3" />
-          </Link>
-        </div>
-        <div className="hover:underline">
-          <Link
-            href={`mailto:${user.email}`}
-            className="flex items-center text-sm"
-          >
-            {user.email}
-            <Mail className="ml-2 h-3 w-3" />
-          </Link>
-        </div>
-      </div>
 
-      <Separator className="my-4" />
+      <Separator className="mb-4" />
 
       <CardContent>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="font-semibold"></div>
+        </div>
         <div className="flex flex-col gap-3">
           <Button
             size="sm"
