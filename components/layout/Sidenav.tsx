@@ -24,7 +24,7 @@ export async function Sidenav() {
 
   return (
     <div
-      className="fixed hidden h-full w-[200px] flex-col items-center space-y-12 border-r  py-8 sm:flex"
+      className="fixed hidden h-full w-[250px] flex-col items-center space-y-12 border-r  py-8 sm:flex"
       aria-label="Sidebar"
     >
       <Link
