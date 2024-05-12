@@ -84,25 +84,27 @@ export const getAllDetailedUsers = async (): Promise<DetailedUser[]> => {
   return users;
 };
 
-export const getDetailedUserById = async (userId: number) => {
-  const user = db.query.users.findFirst({
+export const getDetailedUserById = async (
+  userId: number,
+): Promise<DetailedUser> => {
+  const user = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.id, userId),
     with: {
       subscriptions: {
+        orderBy: [desc(subscriptions.startDate)],
         with: {
           user: true,
           vehicle: true,
           washes: { orderBy: [desc(washes.createdAt)] },
           purchases: { orderBy: [desc(purchases.updatedAt)] },
         },
-        orderBy: [desc(subscriptions.updatedAt)],
       },
       vehicles: { orderBy: [desc(vehicles.updatedAt)] },
       washes: { orderBy: [desc(washes.updatedAt)] },
       purchases: { orderBy: [desc(purchases.updatedAt)] },
     },
   });
-  return user;
+  return user!;
 };
 
 export async function getAllSubscriptions() {
