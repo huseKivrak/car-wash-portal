@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { Sidenav } from "@/components/layout/Sidenav";
+
 import { cn } from "@/lib/utils";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400"] });
@@ -26,7 +27,7 @@ export default function RootLayout({
         )}
       >
         <Sidenav />
-        <main className="flex min-h-screen max-w-7xl flex-col px-8 pt-16 sm:ml-[200px] md:ml-[300px]">
+        <main className="flex min-h-screen max-w-7xl flex-col p-8 sm:ml-[250px]">
           {children}
         </main>
         <Toaster />
