@@ -6,7 +6,15 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import React from "react";
 import { Button } from "../ui/button";
-import { FolderX, LucideEdit, MoreHorizontal, User, UserX } from "lucide-react";
+import {
+  FolderSyncIcon,
+  FolderX,
+  LucideEdit,
+  MoreHorizontal,
+  MoreVertical,
+  User,
+  UserX,
+} from "lucide-react";
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -20,6 +28,8 @@ import { UserForm } from "../forms/UserForm";
 import { DetailedSubscription, DetailedUser } from "@/types/types";
 import { useDialog } from "../ui/use-dialog";
 import { cancelSubscription } from "@/actions/subscriptions";
+import { TransferSubscriptionForm } from "../forms/TransferSubscriptionForm";
+import Link from "next/link";
 
 export const UserActionsMenu = ({ user }: { user: DetailedUser }) => {
   const deleteDialog = useDialog();
@@ -28,7 +38,7 @@ export const UserActionsMenu = ({ user }: { user: DetailedUser }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="h-8 w-8 p-0">
+        <Button variant="outline" size="icon" className="h-8 w-8 ">
           <span className="sr-only">Open menu</span>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
@@ -87,6 +97,14 @@ export const SubscriptionActionsMenu = ({
             <LucideEdit className="mr-1 h-4 w-4" />
             <span>Edit</span>
           </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link href={`/users/${subscription.user.id}?showTransferForm=true`}>
+              <FolderSyncIcon className="mr-1 h-4 w-4" />
+              <span>Transfer</span>
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem onSelect={deleteDialog.trigger}>
             <FolderX className="mr-1 h-4 w-4" />
             <span>Cancel</span>
@@ -102,6 +120,7 @@ export const SubscriptionActionsMenu = ({
           </DialogClose>
         </DialogContent>
       </Dialog>
+
       <DeleteModal
         id={subscription.id}
         deleteAction={cancelSubscription}
