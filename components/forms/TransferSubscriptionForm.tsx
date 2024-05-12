@@ -114,11 +114,13 @@ export function TransferSubscriptionForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {user.subscriptions.map((sub) => (
-                      <SelectItem value={sub.id.toString()} key={sub.id}>
-                        {makeVehicleTitle(sub.vehicle)}
-                      </SelectItem>
-                    ))}
+                    {user.subscriptions
+                      .filter((sub) => sub.subscriptionStatus === "active")
+                      .map((sub) => (
+                        <SelectItem value={sub.id.toString()} key={sub.id}>
+                          {makeVehicleTitle(sub.vehicle)}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
 
