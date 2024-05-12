@@ -3,10 +3,13 @@ import { getDetailedUserById } from "@/database/queries";
 
 export default async function UserDetailPage({
   params,
+  searchParams,
 }: {
   params: { userId: string };
+  searchParams: { showTransferForm: string };
 }) {
   const { userId } = params;
+  const { showTransferForm } = searchParams;
 
   const user = await getDetailedUserById(parseInt(userId));
   if (!user) {
@@ -14,7 +17,7 @@ export default async function UserDetailPage({
   }
   return (
     <div className="flex flex-col items-center">
-      <CustomerDashboard user={user} />
+      <CustomerDashboard user={user} showTransferForm={showTransferForm} />
     </div>
   );
 }
