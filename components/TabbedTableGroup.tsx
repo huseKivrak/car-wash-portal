@@ -4,11 +4,11 @@ import { subscriptionColumns } from "./table/subscriptionColumns";
 import { purchaseColumns } from "./table/purchaseColumns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DetailedUser } from "@/types/types";
-import { dummyData } from "@/dummyData";
+
 import { Separator } from "./ui/separator";
 
 export function TabbedTableGroup({
-  users = dummyData as unknown as DetailedUser[],
+  users,
   userTable = true,
   subscriptionTable = true,
   purchaseTable = true,

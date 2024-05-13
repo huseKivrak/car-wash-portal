@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { UsersAutocomplete } from "../UsersAutocomplete";
 import Link from "next/link";
-import { dummyData } from "@/dummyData";
+
 import {
   Tooltip,
   TooltipContent,
@@ -15,12 +15,14 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { DetailedUser } from "@/types/types";
+import { getAllDetailedUsers } from "@/database/queries";
 export async function Sidenav() {
   const links = [
     { href: "/users", icon: Users, label: "Users" },
     { href: "/subscriptions", icon: CarFront, label: "Subscriptions" },
   ];
 
+  const users = await getAllDetailedUsers();
   return (
     <div
       className="fixed hidden h-full w-[250px] flex-col items-center space-y-12 border-r  py-8 sm:flex"
@@ -52,7 +54,7 @@ export async function Sidenav() {
         </TooltipProvider>
       ))}
 
-      <UsersAutocomplete users={dummyData as unknown as DetailedUser[]} />
+      <UsersAutocomplete users={users} />
     </div>
   );
 }

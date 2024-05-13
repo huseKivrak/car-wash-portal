@@ -1,7 +1,4 @@
 import { getAllDetailedUsers } from "@/database/queries";
-import { UsersAutocomplete } from "@/components/UsersAutocomplete";
-import { dummyData } from "@/dummyData";
-import { DetailedUser } from "@/types/types";
 import { TabbedTableGroup } from "@/components/TabbedTableGroup";
 
 export default async function App() {
