@@ -33,7 +33,7 @@ export async function Sidenav() {
         className="flex flex-row items-center space-x-1 rounded-full p-2 duration-200 hover:bg-white/10 hover:text-pink-100"
       >
         <WashingMachine className="h-10 w-10 text-pink-400/90 " />
-        <span className="sr-only">'Home'</span>
+        <span className="sr-only">Home</span>
       </Link>
       {links.map(({ href, icon: Icon, label }) => (
         <TooltipProvider key={label} delayDuration={300}>
