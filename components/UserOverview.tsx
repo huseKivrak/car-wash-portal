@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightLeft, UserX } from "lucide-react";
+import { ArrowRightLeft, FilePlus, UserX } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,7 @@ import { TransferSubscriptionForm } from "./forms/TransferSubscriptionForm";
 import { formatDateTime } from "@/lib/utils";
 import { UserForm } from "./forms/UserForm";
 import { UserActionsMenu } from "./table/ActionMenus";
+import { AddSubScriptionForm } from "./forms/AddSubscriptionForm";
 
 export function UserOverview({
   user,
@@ -34,6 +35,7 @@ export function UserOverview({
   const cancelDialog = useDialog();
   const editDialog = useDialog();
   const transferSubscriptionDialog = useDialog();
+  const addSubscriptionDialog = useDialog();
   return (
     <Card className="space-y-4 rounded-xl border-2">
       <CardHeader className="flex flex-row items-start bg-muted/50 ">
@@ -80,6 +82,15 @@ export function UserOverview({
           </Button>
           <Button
             size="sm"
+            variant="outline"
+            onClick={addSubscriptionDialog.trigger}
+            className="bg-accent"
+          >
+            <FilePlus className="mr-2 h-4 w-4" />
+            Add subscription
+          </Button>
+          <Button
+            size="sm"
             variant="secondary"
             onClick={transferSubscriptionDialog.trigger}
             className="bg-primary "
@@ -103,6 +114,15 @@ export function UserOverview({
             <TransferSubscriptionForm
               user={user}
               onSuccess={transferSubscriptionDialog.dismiss}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog {...addSubscriptionDialog.props}>
+          <DialogContent>
+            <AddSubScriptionForm
+              user={user}
+              onSuccess={addSubscriptionDialog.dismiss}
             />
           </DialogContent>
         </Dialog>
