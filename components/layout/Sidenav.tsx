@@ -1,10 +1,4 @@
-import {
-  CalendarIcon,
-  CarFront,
-  Users,
-  WashingMachine,
-  ShoppingCart,
-} from "lucide-react";
+import { CarFront, Users, WashingMachine } from "lucide-react";
 import { UsersAutocomplete } from "../UsersAutocomplete";
 import Link from "next/link";
 
@@ -14,7 +8,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { DetailedUser } from "@/types/types";
 import { getAllDetailedUsers } from "@/database/queries";
 export async function Sidenav() {
   const links = [
