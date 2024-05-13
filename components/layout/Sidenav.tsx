@@ -19,7 +19,6 @@ export async function Sidenav() {
   const links = [
     { href: "/users", icon: Users, label: "Users" },
     { href: "/subscriptions", icon: CarFront, label: "Subscriptions" },
-    { href: "/purchases", icon: ShoppingCart, label: "Purchases" },
   ];
 
   return (
