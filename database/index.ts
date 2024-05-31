@@ -1,10 +1,19 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { connectionString } from "@/drizzle.config";
 import * as schema from "./schema";
+import dotenv from "dotenv";
 
-const connection = postgres(connectionString!, { prepare: false });
+dotenv.config();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error("No DATABASE_URL provided");
+  process.exit(1);
+}
 
-const db = drizzle(connection, { schema, logger: false });
-export * from "./schema";
-export { db };
+const client = postgres(connectionString, {
+  prepare: false,
+});
+
+console.log("Connecting to database...");
+export const db = drizzle(client, { schema });
+console.log("Database connection established");
