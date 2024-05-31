@@ -1,7 +1,6 @@
 import { db } from ".";
-import { users, vehicles, subscriptions, washes, purchases } from "./schema";
 import { faker } from "@faker-js/faker";
-
+import { users, vehicles, subscriptions, washes, purchases } from "./schema";
 import {
   User,
   NewUser,
@@ -14,24 +13,32 @@ import {
   NewPurchase,
 } from "@/types/types";
 
+// Generate fake data
 const generateUsers = (count: number): NewUser[] => {
-  return Array.from({ length: count }, () => ({
-    name: faker.person.fullName(),
-    phone: faker.phone.number(),
-    email: faker.internet.email(),
-    createdAt: faker.date.past(),
-  }));
+  return Array.from({ length: count }, () => {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    return {
+      name: `${firstName} ${lastName}`,
+      email: faker.internet.email({ firstName, lastName }),
+      phone: faker.phone.number(),
+      createdAt: faker.date.past(),
+    };
+  });
 };
 
 const generateVehicles = (users: User[]): NewVehicle[] => {
-  return users.map((user) => ({
-    licensePlate: faker.vehicle.vin(),
-    make: faker.vehicle.manufacturer(),
-    model: faker.vehicle.model(),
-    year: faker.date.past().getFullYear(),
-    color: faker.vehicle.color(),
-    userId: user.id,
-  }));
+  return users.map((user) => {
+    const emoji = faker.internet.emoji();
+    return {
+      licensePlate: faker.vehicle.vin(),
+      make: `${emoji}${faker.vehicle.manufacturer()}`,
+      model: `${faker.vehicle.model()}${emoji}`,
+      year: faker.date.past().getFullYear(),
+      color: faker.vehicle.color(),
+      userId: user.id,
+    };
+  });
 };
 
 const generateSubscriptions = (vehicles: Vehicle[]): NewSubscription[] => {
@@ -47,6 +54,7 @@ const generateSubscriptions = (vehicles: Vehicle[]): NewSubscription[] => {
   }));
 };
 
+// Join table data
 const generateSubscriptionWashes = (
   subscriptions: Subscription[],
   vehicles: Vehicle[],
@@ -64,7 +72,7 @@ const generateSubscriptionWashes = (
 
 const generateSingleWashes = (users: User[]): NewWash[] => {
   return users
-    .filter((u) => u.id > 40)
+    .filter((u) => u.id > 75)
     .map((u) => ({
       createdAt: faker.date.between({ from: u.createdAt, to: new Date() }),
       userId: u.id,
@@ -76,9 +84,9 @@ const generateSubscriptionPurchases = (
   vehicles: Vehicle[],
 ): NewPurchase[] => {
   return subscriptions.map((sub) => {
-    const vehicle = vehicles.find((v) => v.id === sub.vehicleId);
+    const vehicle = vehicles.find((v) => v.id === sub.vehicleId)!;
     return {
-      userId: vehicle?.userId ?? 99,
+      userId: vehicle.userId,
       subscriptionId: sub.id,
       itemType: "subscription",
       price: sub.subscriptionType === "basic" ? 100 : 1000,
@@ -105,6 +113,7 @@ const generateSingleWashPurchases = (washes: Wash[]): NewPurchase[] => {
   });
 };
 
+// Seed
 const seedUsers = async (count: number) => {
   const seedUsers = generateUsers(count);
   try {
@@ -222,25 +231,21 @@ const seedSingleWashPurchases = async (washes: Wash[]) => {
   }
 };
 
-const seedDatabase = async (userCount: number) => {
+export const seedDatabase = async (userCount: number) => {
   try {
     const users = await seedUsers(userCount);
     const vehicles = await seedVehicles(users!);
     const subscriptions = await seedSubscriptions(vehicles!);
-    const subscriptionWashes = await seedSubscriptionWashes(
-      subscriptions!,
-      vehicles!,
-    );
+
+    await seedSubscriptionWashes(subscriptions!, vehicles!);
     const singleWashes = await seedSingleWashes(users!);
-    const subscriptionPurchases = await seedSubscriptionPurchases(
-      subscriptions!,
-      vehicles!,
-    );
-    const singleWashPurchases = await seedSingleWashPurchases(singleWashes!);
-    console.log("Seeded database successfully");
+    await seedSubscriptionPurchases(subscriptions!, vehicles!);
+    await seedSingleWashPurchases(singleWashes!);
+
+    console.log("Database seeded.");
   } catch (error) {
     console.error(error);
   }
 };
 
-seedDatabase(50);
+seedDatabase(100);
