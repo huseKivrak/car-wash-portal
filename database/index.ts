@@ -4,7 +4,7 @@ import * as schema from "./schema";
 import dotenv from "dotenv";
 
 dotenv.config();
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.POSTGRES_URL;
 if (!connectionString) {
   console.error("No DATABASE_URL provided");
   process.exit(1);
