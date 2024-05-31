@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    autoResetPageIndex: true,
+    autoResetPageIndex: false,
 
     state: {
       sorting,
@@ -181,7 +181,6 @@ function Filter({ column }: { column: Column<any, unknown> }) {
   );
 }
 
-// A typical debounced input react component
 export function DebouncedInput({
   value: initialValue,
   onChange,
