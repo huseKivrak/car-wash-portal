@@ -166,6 +166,7 @@ export function AddSubScriptionForm({
                   variant="secondary"
                   onClick={addVehicleDialog.trigger}
                   className="flex justify-start font-bold hover:font-extrabold"
+                  type="button"
                 >
                   <Car className="mr-2 h-4 w-4" />
                   Add new vehicle
