@@ -6,7 +6,6 @@ import { eq } from "drizzle-orm";
 import { z, ZodError } from "zod";
 import { insertUserSchema } from "@/database/schema";
 import { revalidatePath } from "next/cache";
-import { User } from "@/types/types";
 
 type InsertUser = z.infer<typeof insertUserSchema>;
 export async function updateUser(fieldsToUpdate: InsertUser) {
